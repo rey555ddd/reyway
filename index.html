@@ -3,406 +3,797 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>笙闆 AI Studio — REYWAY</title>
-<meta name="description" content="AI-Powered Brand Tools Hub">
+<title>陳睿笙 · REYWAY</title>
+<meta name="description" content="笙闆 AI Studio — 品牌工具集合站">
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0fa882">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="REYWAY">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script src="https://accounts.google.com/gsi/client" async></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#fafbfd;
-  --surface:#ffffff;
-  --card:#ffffff;
-  --card-hover:#f5f8fc;
-  --border:rgba(0,0,0,0.07);
-  --border-hover:rgba(0,0,0,0.14);
-  --gold:#b8963e;
-  --gold-dim:rgba(184,150,62,0.08);
-  --primary:#3a7cc6;
-  --primary-dim:rgba(58,124,198,0.08);
-  --emerald:#3a7cc6;
-  --emerald-dim:rgba(58,124,198,0.08);
-  --violet:#6b5cad;
-  --violet-dim:rgba(107,92,173,0.08);
-  --orange:#c47a3a;
-  --orange-dim:rgba(196,122,58,0.08);
-  --blue:#3a7cc6;
-  --blue-dim:rgba(58,124,198,0.08);
-  --text:#1a2030;
-  --text-muted:rgba(26,32,48,0.45);
-  --text-dim:rgba(26,32,48,0.25);
-  --radius:16px;
-  --ease:cubic-bezier(.22,1,.36,1);
+  --bg:#F5F4F0;
+  --surface:#FFFFFF;
+  --text:#1C1C1E;
+  --text-2:#6E6E73;
+  --text-3:#AEAEB2;
+  --border:rgba(0,0,0,0.06);
+  --shadow:0 2px 16px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-hover:0 8px 32px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
+  --radius:18px;
+  --radius-sm:12px;
 }
 html{scroll-behavior:smooth}
 body{
   font-family:'Inter','Noto Sans TC',sans-serif;
-  background:var(--bg);color:var(--text);
-  overflow-x:hidden;min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
   -webkit-font-smoothing:antialiased;
+  min-height:100vh;
 }
-::selection{background:rgba(58,124,198,0.15)}
-
-/* ===== Ambient Background ===== */
-.ambient{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-.orb{position:absolute;border-radius:50%;filter:blur(100px);will-change:transform}
-.orb-1{width:50vw;height:50vw;top:-20%;left:-15%;background:radial-gradient(circle,rgba(58,124,198,0.04),transparent 65%);animation:drift1 30s ease-in-out infinite}
-.orb-2{width:40vw;height:40vw;bottom:-15%;right:-10%;background:radial-gradient(circle,rgba(184,150,62,0.03),transparent 65%);animation:drift2 25s ease-in-out infinite}
-@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,30px)}}
-@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-40px)}}
 
 /* ===== Layout ===== */
-.container{max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+
+/* ===== Google Login Gate ===== */
+#site-gate{
+  position:fixed;inset:0;z-index:999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  gap:0;
+}
+#site-gate.hidden{display:none}
+.gate-card{
+  background:var(--surface);
+  border-radius:24px;
+  padding:40px 36px 36px;
+  text-align:center;
+  box-shadow:0 8px 40px rgba(0,0,0,0.1);
+  width:320px;max-width:90vw;
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+}
+.gate-logo{font-size:2rem;margin-bottom:4px}
+.gate-title{font-size:1.15rem;font-weight:700;color:var(--text);letter-spacing:-0.01em}
+.gate-desc{font-size:0.83rem;color:var(--text-2);line-height:1.6;max-width:220px}
+.gate-divider{width:100%;height:1px;background:var(--border);margin:4px 0}
+#g_signin_btn{margin-top:4px}
+.gate-note{font-size:0.72rem;color:var(--text-3)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.shake{animation:shake 0.35s ease}
+
+/* ===== Link Modal ===== */
+#link-modal{
+  position:fixed;inset:0;z-index:998;
+  background:rgba(0,0,0,0.35);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+}
+#link-modal.hidden{display:none}
+.modal-box{
+  background:var(--surface);border-radius:20px;padding:32px 28px;
+  width:320px;max-width:90vw;text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,0.15);
+}
+.modal-box h3{font-size:1rem;font-weight:600;margin-bottom:6px}
+.modal-box p{font-size:0.82rem;color:var(--text-2);margin-bottom:20px}
+.modal-box input{
+  padding:11px 18px;border-radius:100px;border:1px solid var(--border);
+  background:var(--bg);font-size:1rem;text-align:center;
+  width:100%;outline:none;letter-spacing:6px;margin-bottom:10px;
+}
+.modal-row{display:flex;gap:8px;margin-top:4px}
+.modal-row button{flex:1;padding:11px;border-radius:100px;border:none;cursor:pointer;font-size:0.85rem;font-weight:500}
+.btn-cancel{background:var(--bg);color:var(--text-2)}
+.btn-ok{background:var(--text);color:#fff}
+#link-modal-error{font-size:0.8rem;color:#FF3B30;min-height:16px;margin-bottom:4px}
+
+/* ===== 待審核畫面 ===== */
+#pending-gate{
+  position:fixed;inset:0;z-index:999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+}
+#pending-gate.hidden{display:none}
+.pending-card{
+  background:var(--surface);border-radius:24px;
+  padding:40px 36px;text-align:center;
+  box-shadow:0 8px 40px rgba(0,0,0,0.1);
+  width:320px;max-width:90vw;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.pending-card .icon{font-size:2.5rem}
+.pending-card h2{font-size:1.1rem;font-weight:700}
+.pending-card p{font-size:0.84rem;color:var(--text-2);line-height:1.6}
+.pending-card .hint{font-size:0.75rem;color:var(--text-3)}
+
+/* ===== 通知 Badge（主公專用）===== */
+#notify-bar{
+  background:var(--surface);
+  border-radius:var(--radius);
+  padding:14px 20px;
+  margin-bottom:20px;
+  box-shadow:var(--shadow);
+  display:none;
+  align-items:center;gap:12px;
+  cursor:pointer;
+  transition:box-shadow 0.2s;
+}
+#notify-bar:hover{box-shadow:var(--shadow-hover)}
+#notify-bar.show{display:flex}
+.notify-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:#FF3B30;flex-shrink:0;
+  box-shadow:0 0 0 3px rgba(255,59,48,0.15);
+}
+.notify-text{flex:1;font-size:0.88rem;font-weight:500}
+.notify-badge{
+  background:#FF3B30;color:#fff;
+  font-size:0.72rem;font-weight:700;
+  padding:2px 8px;border-radius:100px;
+}
+
+/* ===== 審核 Modal ===== */
+#approve-modal{
+  position:fixed;inset:0;z-index:998;
+  background:rgba(0,0,0,0.35);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+}
+#approve-modal.hidden{display:none}
+.approve-box{
+  background:var(--surface);border-radius:20px;
+  padding:28px 24px;width:360px;max-width:90vw;
+  box-shadow:0 20px 60px rgba(0,0,0,0.15);
+}
+.approve-box h3{font-size:1rem;font-weight:700;margin-bottom:4px}
+.approve-box .sub{font-size:0.8rem;color:var(--text-2);margin-bottom:16px}
+.approve-list{display:flex;flex-direction:column;gap:10px;max-height:300px;overflow-y:auto}
+.approve-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;border-radius:12px;
+  background:var(--bg);
+}
+.approve-item .info{flex:1}
+.approve-item .name{font-size:0.88rem;font-weight:600}
+.approve-item .email{font-size:0.75rem;color:var(--text-2)}
+.approve-item .time{font-size:0.72rem;color:var(--text-3)}
+.approve-actions{display:flex;gap:6px}
+.btn-approve{padding:6px 14px;border-radius:100px;border:none;cursor:pointer;font-size:0.78rem;font-weight:600;background:#34C759;color:#fff}
+.btn-reject{padding:6px 14px;border-radius:100px;border:none;cursor:pointer;font-size:0.78rem;font-weight:500;background:rgba(0,0,0,0.06);color:var(--text-2)}
+.approve-empty{font-size:0.85rem;color:var(--text-3);text-align:center;padding:20px}
+.approve-close{float:right;background:none;border:none;cursor:pointer;font-size:1rem;color:var(--text-3);margin-bottom:8px}
 
 /* ===== Header ===== */
-.header{padding:48px 0 0;text-align:center}
-.header-top{display:flex;align-items:center;justify-content:center;gap:20px;margin-bottom:16px}
-.avatar-wrap{position:relative;width:72px;height:72px;flex-shrink:0}
-.avatar{width:72px;height:72px;border-radius:50%;border:2px solid rgba(58,124,198,0.25);object-fit:cover;position:relative;z-index:2;box-shadow:0 4px 20px rgba(58,124,198,0.1)}
-.avatar-smoke{
-  position:absolute;inset:-14px;z-index:1;border-radius:50%;
-  background:radial-gradient(ellipse at 55% 35%, rgba(58,124,198,0.1), rgba(184,150,62,0.05) 50%, transparent 75%);
-  filter:blur(14px);
-  animation:smoke 6s ease-in-out infinite;
+header{padding:56px 0 40px;text-align:center}
+.avatar-ring{
+  width:80px;height:80px;border-radius:50%;
+  border:2px solid rgba(0,0,0,0.08);
+  overflow:hidden;margin:0 auto 20px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.1);
 }
-.avatar-smoke::after{
-  content:'';position:absolute;
-  top:-10px;right:-18px;width:45px;height:65px;
-  background:linear-gradient(160deg, rgba(58,124,198,0.06), rgba(184,150,62,0.04), transparent);
-  filter:blur(12px);border-radius:50%;
-  animation:smokeDrift 8s ease-in-out infinite;
+.avatar-ring img{width:100%;height:100%;object-fit:cover}
+header h1{
+  font-size:1.75rem;font-weight:700;letter-spacing:-0.02em;
+  color:var(--text);margin-bottom:6px;
 }
-@keyframes smoke{
-  0%,100%{opacity:0.6;transform:scale(1)}
-  50%{opacity:1;transform:scale(1.08)}
+header .en{
+  font-size:0.78rem;letter-spacing:0.18em;color:var(--text-3);
+  text-transform:uppercase;margin-bottom:10px;
 }
-@keyframes smokeDrift{
-  0%,100%{transform:translateY(0) rotate(0deg);opacity:0.5}
-  50%{transform:translateY(-8px) rotate(5deg);opacity:0.8}
-}
-.header h1{
-  font-family:'Noto Serif TC',serif;
-  font-size:1.8rem;font-weight:700;
-  background:linear-gradient(135deg,#2a6ab5,#3a7cc6,#b8963e);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  letter-spacing:2px;
-}
-.header .subtitle{
-  font-size:0.85rem;color:var(--text-muted);
-  letter-spacing:3px;margin-top:4px;
-}
-.header-intro{
-  font-size:0.82rem;color:var(--text-muted);
-  line-height:1.8;margin-top:12px;
-  font-weight:300;letter-spacing:0.3px;
+header .bio{
+  font-size:0.88rem;color:var(--text-2);line-height:1.7;
+  max-width:360px;margin:0 auto;font-weight:400;
 }
 
-.avatar-fallback{
-  width:72px;height:72px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,var(--primary),var(--gold));
-  color:#fff;font-size:1.6rem;font-weight:700;
-  font-family:'Noto Serif TC',serif;
-  position:relative;z-index:2;
+/* ===== Quick Nav ===== */
+.quick-nav{
+  display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;
+  padding:0 0 36px;
+}
+.qnav{
+  padding:8px 18px;border-radius:100px;
+  background:var(--surface);
+  border:none;cursor:pointer;
+  font-size:0.82rem;font-weight:500;
+  color:var(--text-2);
+  box-shadow:var(--shadow);
+  transition:background 0.18s,color 0.18s,box-shadow 0.18s;
+  text-decoration:none;display:inline-block;
+}
+.qnav:hover{
+  background:var(--text);color:#fff;
+  box-shadow:var(--shadow-hover);
 }
 
-/* ===== Navigation Tabs ===== */
-.nav-tabs{
-  display:flex;justify-content:center;gap:8px;
-  padding:32px 0 16px;flex-wrap:wrap;
+/* ===== Section ===== */
+section{margin-bottom:48px;scroll-margin-top:24px}
+.section-head{
+  display:flex;align-items:center;gap:12px;margin-bottom:20px;
 }
-.nav-tab{
-  padding:10px 24px;border-radius:100px;
-  font-size:0.85rem;font-weight:500;
-  background:transparent;border:1px solid var(--border);
-  color:var(--text-muted);cursor:pointer;
-  transition:all 0.3s var(--ease);
-  letter-spacing:0.5px;
-}
-.nav-tab:hover{border-color:var(--border-hover);color:var(--text)}
-.nav-tab.active{
-  background:var(--primary-dim);
-  border-color:rgba(58,124,198,0.25);
-  color:var(--primary);
-}
-.nav-tab[data-brand="cleanclean"].active{background:var(--emerald-dim);border-color:rgba(58,124,198,0.25);color:var(--emerald)}
-.nav-tab[data-brand="ego"].active{background:var(--violet-dim);border-color:rgba(107,92,173,0.25);color:var(--violet)}
-.nav-tab[data-brand="ruoshui"].active{background:var(--blue-dim);border-color:rgba(58,124,198,0.25);color:var(--blue)}
-.nav-tab[data-brand="tools"].active{background:var(--gold-dim);border-color:rgba(184,150,62,0.25);color:var(--gold)}
-
-/* ===== Brand Pages ===== */
-.brand-page{display:none;padding:24px 0 80px;animation:fadeIn 0.4s var(--ease)}
-.brand-page.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-
-/* ===== Brand Header ===== */
-.brand-header{
-  display:flex;align-items:center;gap:16px;
-  margin-bottom:32px;padding-bottom:24px;
-  border-bottom:1px solid var(--border);
-}
-.brand-icon{width:48px;height:48px;border-radius:14px;object-fit:cover}
-.brand-header h2{font-size:1.3rem;font-weight:700;font-family:'Noto Sans TC',sans-serif}
-.brand-header .brand-desc{font-size:0.8rem;color:var(--text-muted);margin-top:2px}
-
-/* ===== Tool Grid ===== */
-.tool-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
-  gap:16px;
-}
-.tool-card{
-  display:flex;flex-direction:column;align-items:center;
-  padding:28px 20px;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  text-decoration:none;color:var(--text);
-  transition:all 0.35s var(--ease);
-  cursor:pointer;position:relative;overflow:hidden;
-  box-shadow:0 1px 4px rgba(0,0,0,0.03);
-}
-.tool-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--emerald),transparent);
-  opacity:0;transition:opacity 0.35s;
-}
-.tool-card:hover{
-  background:var(--card-hover);
-  border-color:var(--border-hover);
-  transform:translateY(-3px);
-  box-shadow:0 8px 32px rgba(58,124,198,0.08), 0 2px 8px rgba(0,0,0,0.04);
-}
-.tool-card:hover::before{opacity:1}
-
-/* Brand-specific top line colors */
-.brand-cleanclean .tool-card::before{background:linear-gradient(90deg,transparent,var(--emerald),transparent)}
-.brand-ego .tool-card::before{background:linear-gradient(90deg,transparent,var(--violet),transparent)}
-.brand-ruoshui .tool-card::before{background:linear-gradient(90deg,transparent,var(--blue),transparent)}
-.brand-tools .tool-card::before{background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-
-.tool-icon{
-  width:48px;height:48px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.1rem;font-weight:700;margin-bottom:14px;
-  background:rgba(26,32,48,0.02);
-  border:1px solid var(--border);
-  font-family:'Noto Sans TC',sans-serif;
-  color:var(--text-muted);letter-spacing:-1px;
-}
-.tool-icon.icon-emerald{background:var(--emerald-dim);border-color:rgba(58,124,198,0.15);color:var(--emerald)}
-.tool-icon.icon-violet{background:var(--violet-dim);border-color:rgba(107,92,173,0.15);color:var(--violet)}
-.tool-icon.icon-gold{background:var(--gold-dim);border-color:rgba(200,168,124,0.15);color:var(--gold)}
-.tool-icon.icon-blue{background:var(--blue-dim);border-color:rgba(107,163,212,0.15);color:var(--blue)}
-.tool-icon.icon-orange{background:var(--orange-dim);border-color:rgba(212,134,74,0.15);color:var(--orange)}
-.tool-card h3{
-  font-size:0.9rem;font-weight:600;
-  text-align:center;margin-bottom:6px;
-  font-family:'Noto Sans TC',sans-serif;
-}
-.tool-card p{
-  font-size:0.72rem;color:var(--text-muted);
-  text-align:center;line-height:1.5;
-}
-.tool-tag{
-  margin-top:12px;padding:3px 10px;
-  font-size:0.65rem;border-radius:100px;
-  letter-spacing:0.5px;
-}
-.tag-live{background:rgba(58,124,198,0.1);color:var(--emerald)}
-.tag-soon{background:rgba(184,150,62,0.1);color:var(--gold)}
-.tag-dev{background:rgba(26,32,48,0.05);color:var(--text-dim)}
-
-/* ===== Section Labels ===== */
 .section-label{
-  font-size:0.7rem;letter-spacing:3px;
-  text-transform:uppercase;color:var(--text-dim);
-  margin:32px 0 16px;padding-left:4px;
+  font-size:0.72rem;font-weight:600;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--text-3);
+}
+.section-line{flex:1;height:1px;background:var(--border)}
+
+/* ===== Grid ===== */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:14px;
+}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+
+/* ===== Card ===== */
+.card{
+  background:var(--surface);
+  border-radius:var(--radius);
+  padding:22px 22px 20px;
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  transition:box-shadow 0.25s ease, transform 0.25s ease;
+  text-decoration:none;
+  color:inherit;
+  display:block;
+  position:relative;
+  overflow:hidden;
+}
+.card:hover{
+  box-shadow:var(--shadow-hover);
+  transform:translateY(-2px);
+}
+.card.inactive{cursor:default;opacity:0.55}
+.card.inactive:hover{box-shadow:var(--shadow);transform:none}
+
+.card-icon{
+  width:44px;height:44px;border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.15rem;font-weight:700;
+  margin-bottom:14px;
+  flex-shrink:0;
+}
+.card-icon img{width:100%;height:100%;object-fit:contain;border-radius:inherit}
+
+.card h3{font-size:0.95rem;font-weight:600;margin-bottom:5px;line-height:1.3}
+.card p{font-size:0.78rem;color:var(--text-2);line-height:1.6;margin-bottom:12px}
+.card-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:0.72rem;font-weight:500;
+  padding:4px 10px;border-radius:100px;
+  background:rgba(0,0,0,0.04);color:var(--text-2);
+}
+.tag-live{background:rgba(52,199,89,0.1);color:#1a7a35}
+.tag-live::before{content:'●';font-size:0.6em}
+.tag-dev{background:rgba(0,0,0,0.05);color:var(--text-3)}
+.tag-dev::before{content:'○';font-size:0.6em}
+.tag-goto{background:rgba(0,122,255,0.08);color:#0055CC}
+.tag-goto::before{content:'→';margin-right:1px}
+
+/* Icon bg variants — subtle, no border */
+.ic-green{background:rgba(52,199,89,0.1);color:#1a7a35}
+.ic-purple{background:rgba(107,92,173,0.1);color:#5b4ca3}
+.ic-gold{background:rgba(184,150,62,0.1);color:#8a6e1a}
+.ic-blue{background:rgba(0,122,255,0.08);color:#0055CC}
+.ic-orange{background:rgba(255,149,0,0.1);color:#b56600}
+.ic-teal{background:rgba(0,199,190,0.1);color:#007a76}
+.ic-red{background:rgba(255,59,48,0.08);color:#cc2200}
+.ic-neutral{background:rgba(0,0,0,0.05);color:var(--text-2)}
+
+/* ===== Big link card ===== */
+.card-full{
+  display:flex;align-items:center;gap:18px;
+  padding:22px 24px;
+}
+.card-full .card-icon{margin-bottom:0;flex-shrink:0}
+.card-full .card-body{flex:1}
+.card-full .card-body h3{margin-bottom:4px}
+.card-full .card-body p{margin-bottom:0}
+.card-full .card-arrow{
+  font-size:1.1rem;color:var(--text-3);flex-shrink:0;
 }
 
-/* ===== Empty State / Coming Soon ===== */
-.coming-soon{
-  text-align:center;padding:60px 20px;
-  color:var(--text-dim);font-size:0.9rem;
+/* ===== 知識庫 ===== */
+.kb-tabs{
+  display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;
 }
+.kb-tab{
+  padding:6px 16px;border-radius:100px;border:none;cursor:pointer;
+  font-size:0.8rem;font-weight:500;
+  background:var(--surface);color:var(--text-2);
+  box-shadow:var(--shadow);
+  transition:background 0.15s,color 0.15s;
+}
+.kb-tab.active,.kb-tab:hover{background:var(--text);color:#fff}
+
+.kb-grid{display:flex;flex-direction:column;gap:10px}
+
+.kb-card{
+  background:var(--surface);
+  border-radius:var(--radius-sm);
+  padding:16px 20px;
+  box-shadow:var(--shadow);
+  display:flex;align-items:center;justify-content:space-between;
+  text-decoration:none;color:inherit;
+  transition:box-shadow 0.2s,transform 0.2s;
+  cursor:pointer;
+}
+.kb-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}
+.kb-left{display:flex;align-items:center;gap:14px}
+.kb-icon{font-size:1.3rem;flex-shrink:0;width:36px;text-align:center}
+.kb-title{font-size:0.9rem;font-weight:600;margin-bottom:3px}
+.kb-meta{font-size:0.75rem;color:var(--text-3)}
+.kb-arrow{font-size:0.95rem;color:var(--text-3);flex-shrink:0}
+.kb-card.hidden{display:none}
+.kb-empty-hint{cursor:default}
+.kb-empty-hint:hover{box-shadow:var(--shadow);transform:none}
 
 /* ===== Footer ===== */
 footer{
-  text-align:center;padding:40px 0;
-  border-top:1px solid var(--border);
-  margin-top:40px;
+  text-align:center;padding:32px 20px 48px;
+  font-size:0.76rem;color:var(--text-3);letter-spacing:0.05em;
 }
-footer p{font-size:0.75rem;color:var(--text-dim);letter-spacing:1px}
 
 /* ===== Responsive ===== */
-@media(max-width:640px){
-  .header h1{font-size:1.4rem}
-  .tool-grid{grid-template-columns:repeat(2,1fr);gap:12px}
-  .tool-card{padding:20px 14px}
-  .nav-tabs{gap:6px}
-  .nav-tab{padding:8px 16px;font-size:0.8rem}
+@media(max-width:600px){
+  header{padding:40px 0 28px}
+  .grid-2{grid-template-columns:1fr}
+  .card-full{flex-direction:column;text-align:center}
+  .card-full .card-icon{margin-bottom:8px}
+  .card-full .card-arrow{display:none}
 }
 </style>
 </head>
 <body>
 
-<div class="ambient">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
+<!-- ===== Google Login Gate ===== -->
+<div id="site-gate">
+  <div class="gate-card">
+    <div class="gate-logo">🔐</div>
+    <div class="gate-title">阿笙的 AI 總站</div>
+    <div class="gate-desc">本站為私人網站，請登入 Google 帳號才能開始</div>
+    <div class="gate-divider"></div>
+    <div id="g_signin_btn"></div>
+    <div class="gate-note">登入後 3 天內免登入</div>
+  </div>
 </div>
 
-<!-- ===== Header ===== -->
-<div class="container">
-  <header class="header">
-    <div class="header-top">
-      <div class="avatar-wrap">
-        <div class="avatar-smoke"></div>
-        <img class="avatar" src="avatar.jpg" alt="笙闆" onerror="this.style.display='none';var d=document.createElement('div');d.className='avatar-fallback';d.textContent='笙';this.parentElement.appendChild(d)">
-      </div>
-      <div>
-        <h1>笙闆 AI Studio</h1>
-        <div class="subtitle">Sheng Boss 智能工作室</div>
-        <p class="header-intro">苗栗小阿笙，用 AI 改變人生的故事</p>
-      </div>
+<!-- ===== Link Gate Modal ===== -->
+<div id="link-modal" class="hidden">
+  <div class="modal-box">
+    <h3 id="link-modal-title">確認身份</h3>
+    <p>請輸入工具站密碼</p>
+    <input id="link-modal-input" type="password" placeholder="••••"
+      onkeydown="if(event.key==='Enter')checkLinkGate()">
+    <div id="link-modal-error"></div>
+    <div class="modal-row">
+      <button class="btn-cancel" onclick="closeLinkModal()">取消</button>
+      <button class="btn-ok" onclick="checkLinkGate()">進入</button>
     </div>
+  </div>
+</div>
+
+<!-- ===== 待審核畫面 ===== -->
+<div id="pending-gate" class="hidden">
+  <div class="pending-card">
+    <div class="icon">⏳</div>
+    <h2>申請已送出</h2>
+    <p>你的登入申請已送達，<br>等待主人審核通過後即可進入。</p>
+    <div class="hint">通常在數小時內處理，請稍後再試</div>
+  </div>
+</div>
+
+<!-- ===== 審核 Modal ===== -->
+<div id="approve-modal" class="hidden">
+  <div class="approve-box">
+    <button class="approve-close" onclick="closeApproveModal()">✕</button>
+    <h3>登入審核</h3>
+    <div class="sub">以下帳號申請進入 reyway.com</div>
+    <div class="approve-list" id="approve-list">
+      <div class="approve-empty">載入中…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Main ===== -->
+<div class="wrap">
+
+  <!-- Header -->
+  <header>
+    <div class="avatar-ring">
+      <img src="avatar.jpg" alt="陳睿笙" onerror="this.outerHTML='<div style=\'width:100%;height:100%;background:#e5e5ea;display:flex;align-items:center;justify-content:center;font-size:1.8rem\'>😎</div>'">
+    </div>
+    <h1>阿笙的 AI 總站</h1>
+    <div class="en">Chen Rey-Sheng · REYWAY</div>
+    <div class="bio">苗栗囝仔，淨淨 CleanClean 創辦人<br>用 AI 改變品牌的玩法</div>
   </header>
 
-  <!-- ===== Nav Tabs ===== -->
-  <nav class="nav-tabs">
-    <button class="nav-tab active" data-brand="overview" onclick="showPage('overview')">總覽</button>
-    <button class="nav-tab" data-brand="cleanclean" onclick="showPage('cleanclean')">淨淨 CleanClean</button>
-    <button class="nav-tab" data-brand="partners" onclick="showPage('partners')">合作品牌</button>
-    <button class="nav-tab" data-brand="tools" onclick="showPage('tools')">智能工具站</button>
+  <!-- 審核通知列（主公專用）-->
+  <div id="notify-bar" onclick="openApproveModal()">
+    <div class="notify-dot"></div>
+    <div class="notify-text">有新的登入申請等待審核</div>
+    <div class="notify-badge" id="notify-count">0</div>
+  </div>
+
+  <!-- Quick Nav -->
+  <nav class="quick-nav">
+    <a class="qnav" href="#sec-ai">笙闆 AI 總站</a>
+    <a class="qnav" href="#sec-cleanclean">淨淨</a>
+    <a class="qnav" href="#sec-ruoshui">若水共創</a>
+    <a class="qnav" href="#sec-tools">智能工具</a>
+    <a class="qnav" href="#sec-kb">網頁知識庫</a>
   </nav>
 
-  <!-- ===== PAGE: 總覽 ===== -->
-  <div class="brand-page active" id="page-overview">
-    <div class="section-label">All Brands</div>
-    <div class="tool-grid">
-      <div class="tool-card" onclick="showPage('cleanclean')">
-        <img class="brand-icon" src="icon-cleanclean.png" alt="淨淨" style="width:48px;height:48px;border-radius:12px;margin-bottom:14px" onerror="this.outerHTML='<div class=\'tool-icon icon-emerald\'>淨</div>'">
-        <h3>淨淨 CleanClean</h3>
-        <p>行銷智能夥伴・營運儀表板・美學工作室</p>
-        <span class="tool-tag tag-live">● 已上線</span>
-      </div>
-      <div class="tool-card" onclick="showPage('partners')">
-        <div class="tool-icon icon-violet">合</div>
-        <h3>合作品牌</h3>
-        <p>伊果國際集團・若水共創</p>
-        <span class="tool-tag tag-live">● 已上線</span>
-      </div>
-      <a class="tool-card" href="https://tools.reyway.com" target="_blank">
-        <div class="tool-icon icon-gold">T</div>
-        <h3>智能工具站</h3>
-        <p>文案小幫手・跨品牌通用工具</p>
-        <span class="tool-tag tag-live">● 已上線</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- ===== PAGE: 淨淨 ===== -->
-  <div class="brand-page brand-cleanclean" id="page-cleanclean">
-    <div class="brand-header">
-      <img class="brand-icon" src="logo-cleanclean.png" alt="淨淨" style="width:48px;height:48px;border-radius:14px;object-fit:contain;background:var(--emerald-dim);padding:6px" onerror="this.outerHTML='<div class=\'tool-icon icon-emerald\' style=\'width:48px;height:48px\'>淨</div>'">
-      <div>
-        <h2 style="color:var(--emerald)">淨淨 CleanClean</h2>
-        <div class="brand-desc">以家人標準出發，讓你簡單就乾淨</div>
-      </div>
+  <!-- ── 笙闆 AI 總站 ── -->
+  <section id="sec-ai">
+    <div class="section-head">
+      <div class="section-label">笙闆 AI 總站</div>
+      <div class="section-line"></div>
     </div>
 
-    <div class="tool-grid">
-      <a class="tool-card" href="https://cleanclean.reyway.com" target="_blank">
-        <div class="tool-icon icon-emerald">AI</div>
-        <h3>行銷智能夥伴</h3>
-        <p>行銷策略 AI 助手<br>文案・定位・漏斗規劃</p>
-        <span class="tool-tag tag-live">● 已上線</span>
+    <a class="card card-full" href="https://aiteam.reyway.com/__login" target="_blank" rel="noopener">
+      <div class="card-icon ic-neutral" style="width:52px;height:52px;border-radius:14px;font-size:1.1rem">⚙</div>
+      <div class="card-body">
+        <h3>若水聯盟總站</h3>
+        <p>AI 軍團後台・任務派工・Inbox・員工檔案・系統設定</p>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+  </section>
+
+  <!-- ── 淨淨 ── -->
+  <section id="sec-cleanclean">
+    <div class="section-head">
+      <div class="section-label">淨淨</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="grid">
+
+      <a class="card" href="https://cleanclean.tw" target="_blank" rel="noopener">
+        <div class="card-icon ic-green">
+          <img src="icon-cleanclean.jpg" alt="淨淨" onerror="this.outerHTML='淨'">
+        </div>
+        <h3>淨淨總站</h3>
+        <p>cleanclean.tw<br>品牌官網・電商・會員中心</p>
+        <span class="card-tag tag-live">已上線</span>
       </a>
-      <a class="tool-card" href="https://cleandata.reyway.com" target="_blank">
-        <div class="tool-icon icon-gold">$</div>
+
+      <a class="card" href="https://cleanclean.reyway.com" target="_blank" rel="noopener">
+        <div class="card-icon ic-green">行</div>
+        <h3>行銷神隊友</h3>
+        <p>品牌策略 AI 助手<br>文案・KOL・社群企劃</p>
+        <span class="card-tag tag-live">已上線</span>
+      </a>
+
+      <a class="card" href="https://design.reyway.com" target="_blank" rel="noopener">
+        <div class="card-icon ic-orange">美</div>
+        <h3>美學工作站</h3>
+        <p>素材合版・產品場景圖<br>AI 圖命名・品牌規範</p>
+        <span class="card-tag tag-live">已上線</span>
+      </a>
+
+      <a class="card" href="https://data.cleanclean.reyway.com" target="_blank" rel="noopener">
+        <div class="card-icon ic-gold">運</div>
         <h3>營運儀表板</h3>
         <p>月營收趨勢・通路分析<br>KPI 與電商數據追蹤</p>
-        <span class="tool-tag tag-live">● 已上線</span>
+        <span class="card-tag tag-live">已上線</span>
       </a>
-      <a class="tool-card" href="https://design.reyway.com" target="_blank">
-        <div class="tool-icon icon-orange">美</div>
-        <h3>美學工作室</h3>
-        <p>素材合版・產品場景圖<br>AI 圖命名・品牌規範</p>
-        <span class="tool-tag tag-live">● 已上線</span>
+
+      <a class="card" href="https://data.cleanclean.reyway.com" target="_blank" rel="noopener">
+        <div class="card-icon ic-teal">數</div>
+        <h3>電商數據站</h3>
+        <p>蝦皮・momo・官網<br>廣告 ROAS・投放分析</p>
+        <span class="card-tag tag-live">已上線</span>
       </a>
-    </div>
-  </div>
 
-  <!-- ===== PAGE: 合作品牌 ===== -->
-  <div class="brand-page brand-ego" id="page-partners">
-    <div class="brand-header">
-      <div class="tool-icon icon-violet" style="width:48px;height:48px">合</div>
-      <div>
-        <h2 style="color:var(--violet)">合作品牌</h2>
-        <div class="brand-desc">品牌共創夥伴 — 各自獨立，深度合作</div>
-      </div>
     </div>
+  </section>
 
-    <div class="section-label">品牌夥伴</div>
-    <div class="tool-grid">
-      <a class="tool-card" href="https://bombboss.reyway.com" target="_blank">
-        <img class="brand-icon" src="icon-eagle-group.png" alt="伊果" style="width:48px;height:48px;border-radius:12px;margin-bottom:14px" onerror="this.outerHTML='<div class=\'tool-icon icon-violet\'>伊</div>'">
+  <!-- ── 若水共創 ── -->
+  <section id="sec-ruoshui">
+    <div class="section-head">
+      <div class="section-label">若水共創</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="grid">
+
+      <a class="card" href="https://bombboss.reyway.com" target="_blank" rel="noopener">
+        <div class="card-icon ic-purple">
+          <img src="icon-eagle-group.jpg" alt="伊果" onerror="this.outerHTML='伊'">
+        </div>
         <h3>伊果國際集團</h3>
-        <p>五大事業體 — 服飾・餐飲<br>飲料・小吃・鐘錶</p>
-        <span class="tool-tag tag-live">● 已上線</span>
+        <p>服飾・餐飲・飲料<br>小吃・鐘錶五大事業</p>
+        <span class="card-tag tag-live">已上線</span>
       </a>
-      <div class="tool-card">
-        <div class="tool-icon icon-blue">水</div>
+
+      <a class="card" href="https://pc.reyway.com" target="_blank" rel="noopener">
+        <div class="card-icon ic-gold">皮</div>
+        <h3>皮爾卡登寢具</h3>
+        <p>PIERRE CARDIN<br>品牌行銷工具站</p>
+        <span class="card-tag tag-live">已上線</span>
+      </a>
+
+      <a class="card" href="https://dadali.reyway.com" target="_blank" rel="noopener">
+        <div class="card-icon ic-blue">力</div>
+        <h3>大大力鍍膜</h3>
+        <p>汽車鍍膜・防護服務<br>品牌行銷工具站</p>
+        <span class="card-tag tag-live">已上線</span>
+      </a>
+
+      <a class="card" href="https://yalun.reyway.com" target="_blank" rel="noopener">
+        <div class="card-icon" style="background:rgba(0,107,62,0.1);color:#006B3E">雅</div>
+        <h3>陳雅倫議員工具站</h3>
+        <p>議員辦公室文案生成<br>周邊設計・海報製作</p>
+        <span class="card-tag tag-live">已上線</span>
+      </a>
+
+      <a class="card" href="https://mori.reyway.com" target="_blank" rel="noopener">
+        <div class="card-icon ic-orange">森</div>
+        <h3>森築居家鍍膜</h3>
+        <p>居家空間防護<br>品牌工具站</p>
+        <span class="card-tag tag-live">已上線</span>
+      </a>
+
+      <a class="card" href="https://lf.reyway.com" target="_blank" rel="noopener">
+        <div class="card-icon" style="background:rgba(204,153,204,0.2);color:#8B5FA8">戀</div>
+        <h3>戀家小舖</h3>
+        <p>Lovingfamily · MIT 寢具<br>品牌行銷工具站</p>
+        <span class="card-tag tag-live">已上線</span>
+      </a>
+
+      <div class="card inactive">
+        <div class="card-icon ic-neutral">水</div>
         <h3>若水共創</h3>
-        <p>品牌共創夥伴<br>招商・CRM 平台</p>
-        <span class="tool-tag tag-dev">建置中</span>
+        <p>品牌共創夥伴平台<br>招商・CRM</p>
+        <span class="card-tag tag-dev">建置中</span>
       </div>
-    </div>
-  </div>
 
-  <!-- ===== PAGE: 智能工具站 ===== -->
-  <div class="brand-page brand-tools" id="page-tools">
-    <div class="brand-header">
-      <div class="tool-icon icon-gold" style="width:48px;height:48px">T</div>
-      <div>
-        <h2 style="color:var(--gold)">智能工具站</h2>
-        <div class="brand-desc">跨品牌通用 — 不分品牌都能用的 AI 工具與效率加速器</div>
+    </div>
+  <!-- ── 網頁知識庫 ── -->
+  <section id="sec-kb">
+    <div class="section-head">
+      <div class="section-label">網頁知識庫</div>
+      <div class="section-line"></div>
+    </div>
+    <a class="card card-full" href="/knowledge/" target="_blank" rel="noopener">
+      <div class="card-icon ic-neutral" style="width:52px;height:52px;border-radius:14px;font-size:1.4rem">📚</div>
+      <div class="card-body">
+        <h3>網頁知識庫</h3>
+        <p>教學頁面・工具文件・臨時 HTML 檔案・品牌報告<br>持續累積中</p>
       </div>
+      <div class="card-arrow">→</div>
+    </a>
+  </section>
+
+  <!-- ── 智能網站・簡易工具 ── -->
+  <section id="sec-tools">
+    <div class="section-head">
+      <div class="section-label">智能網站 · 簡易工具</div>
+      <div class="section-line"></div>
     </div>
 
-    <div class="tool-grid" style="grid-template-columns:1fr;max-width:560px;margin:0 auto;">
-      <a class="tool-card" href="https://tools.reyway.com" target="_blank" style="text-align:center;padding:32px 24px;">
-        <div class="tool-icon icon-gold" style="margin:0 auto 12px;">T</div>
-        <h3>前往工具站</h3>
-        <p>文案小幫手、海外購物助手、去背情境、植物醫生……<br>跨品牌通用 AI 工具，持續增加中</p>
-        <span class="tool-tag tag-live" style="margin-top:12px;">● 已上線 · 點擊前往</span>
-      </a>
-    </div>
-  </div>
+    <a class="card card-full" href="https://tools.reyway.com" target="_blank" rel="noopener">
+      <div class="card-icon ic-blue" style="width:52px;height:52px;border-radius:14px;font-size:1.3rem">智</div>
+      <div class="card-body">
+        <h3>智能工具箱 · tools.reyway.com</h3>
+        <p>文案小幫手・去背情境・海外購物助手<br>跨品牌通用 AI 工具，持續增加中</p>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+  </section>
 
-  <!-- ===== Footer ===== -->
-  <footer>
-    <p>© 2026 REYWAY — Built with AI, Powered by 笙闆</p>
-  </footer>
+  <footer>© 2026 REYWAY · 陳睿笙 · Built with AI</footer>
+
 </div>
 
 <script>
-function showPage(brand) {
-  // Hide all pages
-  document.querySelectorAll('.brand-page').forEach(p => p.classList.remove('active'));
-  // Deactivate all tabs
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+// ─── 設定 ───
+const GOOGLE_CLIENT_ID = '483459469206-36b4ctr9fo0d9j9qgqp22itkp01hk6a2.apps.googleusercontent.com';
+const AUTH_KEY   = 'reyway_gauth';
+const OWNER_EMAIL = 'reysionchen@gmail.com';
+const AUTH_TTL_OWNER = 365 * 24 * 60 * 60 * 1000;
+const AUTH_TTL_GUEST = 3   * 24 * 60 * 60 * 1000;
+const API = '/api/auth';
 
-  // Show target page
-  const page = document.getElementById('page-' + brand);
-  if (page) page.classList.add('active');
+let _currentUser = null;
 
-  // Activate target tab
-  const tab = document.querySelector(`.nav-tab[data-brand="${brand}"]`);
-  if (tab) tab.classList.add('active');
+// ─── 工具 ───
+function hide(id){ document.getElementById(id).classList.add('hidden') }
+function show(id){ document.getElementById(id).classList.remove('hidden') }
 
-  // Scroll to top smoothly
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+// ─── 登入後主流程 ───
+async function afterLogin(email, name) {
+  _currentUser = { email, name };
+
+  if (email === OWNER_EMAIL) {
+    // 主公：直接進入，並檢查待審核通知
+    hide('site-gate');
+    checkPendingNotify();
+    return;
+  }
+
+  // 訪客：問後端是否核准
+  try {
+    const res = await fetch(`${API}?action=status&email=${encodeURIComponent(email)}`);
+    const data = await res.json();
+
+    if (data.status === 'approved') {
+      hide('site-gate');
+    } else if (data.status === 'pending') {
+      hide('site-gate');
+      show('pending-gate');
+    } else {
+      // unknown → 送申請
+      await fetch(`${API}?action=request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name })
+      });
+      hide('site-gate');
+      show('pending-gate');
+    }
+  } catch(e) {
+    hide('site-gate');
+    show('pending-gate');
+  }
 }
+
+// ─── Google 登入回調 ───
+function onGoogleSignIn(credential) {
+  try {
+    const payload = JSON.parse(atob(credential.split('.')[1]));
+    const ttl = payload.email === OWNER_EMAIL ? AUTH_TTL_OWNER : AUTH_TTL_GUEST;
+    localStorage.setItem(AUTH_KEY, JSON.stringify({
+      email: payload.email,
+      name:  payload.name,
+      expiry: Date.now() + ttl
+    }));
+    afterLogin(payload.email, payload.name);
+  } catch(e) { alert('登入失敗，請重試'); }
+}
+
+// ─── 初始化（頁面載入時） ───
+(function(){
+  try {
+    const stored = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null');
+    if (stored && stored.expiry > Date.now()) {
+      afterLogin(stored.email, stored.name);
+      return;
+    }
+  } catch(e) {}
+
+  // 未登入 → 顯示 Google 登入按鈕
+  window.addEventListener('load', function() {
+    if (typeof google === 'undefined') return;
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: function(resp){ onGoogleSignIn(resp.credential); },
+      auto_select: false,
+    });
+    google.accounts.id.renderButton(
+      document.getElementById('g_signin_btn'),
+      { theme: 'outline', size: 'large', shape: 'pill', width: 240, locale: 'zh-TW' }
+    );
+  });
+})();
+
+// ─── 主公：查待審核通知 ───
+async function checkPendingNotify() {
+  try {
+    const res = await fetch(`${API}?action=pending`, {
+      headers: { 'X-Owner-Token': OWNER_EMAIL }
+    });
+    const data = await res.json();
+    const count = (data.pending || []).length;
+    if (count > 0) {
+      document.getElementById('notify-count').textContent = count;
+      document.getElementById('notify-bar').classList.add('show');
+    }
+  } catch(e) {}
+}
+
+// ─── 審核 Modal ───
+async function openApproveModal() {
+  show('approve-modal');
+  const list = document.getElementById('approve-list');
+  list.innerHTML = '<div class="approve-empty">載入中…</div>';
+
+  try {
+    const res = await fetch(`${API}?action=pending`, {
+      headers: { 'X-Owner-Token': OWNER_EMAIL }
+    });
+    const data = await res.json();
+    const pending = data.pending || [];
+
+    if (pending.length === 0) {
+      list.innerHTML = '<div class="approve-empty">目前沒有待審核申請</div>';
+      return;
+    }
+
+    list.innerHTML = pending.map(p => `
+      <div class="approve-item" id="item-${btoa(p.email)}">
+        <div class="info">
+          <div class="name">${p.name || p.email}</div>
+          <div class="email">${p.email}</div>
+          <div class="time">${new Date(p.requestedAt).toLocaleString('zh-TW')}</div>
+        </div>
+        <div class="approve-actions">
+          <button class="btn-approve" onclick="doApprove('${p.email}', false)">通過</button>
+          <button class="btn-reject"  onclick="doApprove('${p.email}', true)">拒絕</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="approve-empty">載入失敗，請重試</div>';
+  }
+}
+
+async function doApprove(email, reject) {
+  await fetch(`${API}?action=approve`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Owner-Token': OWNER_EMAIL },
+    body: JSON.stringify({ email, reject })
+  });
+  // 移除該列
+  const el = document.getElementById('item-' + btoa(email));
+  if (el) el.remove();
+  // 更新通知數
+  const remaining = document.querySelectorAll('.approve-item').length;
+  if (remaining === 0) {
+    document.getElementById('approve-list').innerHTML = '<div class="approve-empty">全部處理完畢 ✓</div>';
+    document.getElementById('notify-bar').classList.remove('show');
+  } else {
+    document.getElementById('notify-count').textContent = remaining;
+  }
+}
+
+function closeApproveModal() { hide('approve-modal'); }
+
+// ─── 知識庫 filter ───
+function filterKb(tag) {
+  document.querySelectorAll('.kb-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.kb-card').forEach(card => {
+    if (card.classList.contains('kb-empty-hint')) return;
+    const match = tag === 'all' || card.dataset.tag === tag;
+    card.classList.toggle('hidden', !match);
+  });
+}
+
+// ─── Link Gate (0000) ───
+const LINK_PWD = '0000';
+let _pendingUrl = '';
+function gatedLink(e, url, title){
+  e.preventDefault();
+  _pendingUrl = url;
+  document.getElementById('link-modal-title').textContent = title || '確認身份';
+  document.getElementById('link-modal-input').value = '';
+  document.getElementById('link-modal-error').textContent = '';
+  document.getElementById('link-modal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('link-modal-input').focus(),100);
+}
+function closeLinkModal(){
+  document.getElementById('link-modal').classList.add('hidden');
+  _pendingUrl = '';
+}
+function checkLinkGate(){
+  const v = document.getElementById('link-modal-input').value;
+  if(v === LINK_PWD){
+    closeLinkModal();
+    window.open(_pendingUrl,'_blank');
+  } else {
+    const inp = document.getElementById('link-modal-input');
+    document.getElementById('link-modal-error').textContent = '密碼錯誤';
+    inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
+    inp.value = ''; setTimeout(()=>inp.focus(),50);
+  }
+}
+document.getElementById('link-modal').addEventListener('click', function(e){
+  if(e.target === this) closeLinkModal();
+});
 </script>
 
 </body>
