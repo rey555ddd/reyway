@@ -12,7 +12,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="REYWAY">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<script src="https://accounts.google.com/gsi/client" async></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -171,6 +170,16 @@ body{
 .btn-reject{padding:6px 14px;border-radius:100px;border:none;cursor:pointer;font-size:0.78rem;font-weight:500;background:rgba(0,0,0,0.06);color:var(--text-2)}
 .approve-empty{font-size:0.85rem;color:var(--text-3);text-align:center;padding:20px}
 .approve-close{float:right;background:none;border:none;cursor:pointer;font-size:1rem;color:var(--text-3);margin-bottom:8px}
+.inbox-tabs{display:flex;gap:8px;margin-bottom:14px}
+.inbox-tab{padding:6px 16px;border-radius:100px;border:none;cursor:pointer;font-size:0.8rem;font-weight:500;background:var(--bg);color:var(--text-2);transition:background 0.15s,color 0.15s}
+.inbox-tab.active{background:var(--text);color:#fff}
+.inbox-item{display:flex;gap:12px;padding:12px 14px;border-radius:12px;background:var(--bg);margin-bottom:8px}
+.inbox-item .inbox-body{flex:1}
+.inbox-item .inbox-site{font-size:0.72rem;font-weight:600;color:var(--text-3);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:3px}
+.inbox-item .inbox-msg{font-size:0.87rem;color:var(--text);line-height:1.5}
+.inbox-item .inbox-time{font-size:0.72rem;color:var(--text-3);margin-top:4px}
+.inbox-item .inbox-del{background:none;border:none;cursor:pointer;color:var(--text-3);font-size:0.9rem;padding:4px;flex-shrink:0;opacity:0.6;align-self:flex-start}
+.inbox-item .inbox-del:hover{opacity:1;color:#FF3B30}
 
 /* ===== Header ===== */
 header{padding:56px 0 40px;text-align:center}
@@ -359,10 +368,15 @@ footer{
   <div class="gate-card">
     <div class="gate-logo">🔐</div>
     <div class="gate-title">阿笙的 AI 總站</div>
-    <div class="gate-desc">本站為私人網站，請登入 Google 帳號才能開始</div>
+    <div class="gate-desc">本站為私人網站，請輸入密碼才能進入</div>
     <div class="gate-divider"></div>
-    <div id="g_signin_btn"></div>
-    <div class="gate-note">登入後 3 天內免登入</div>
+    <input id="site-pwd-input" type="password" placeholder="••••"
+      autocomplete="current-password"
+      onkeydown="if(event.key==='Enter')doPasswordLogin()"
+      style="padding:12px 20px;border-radius:100px;border:1px solid rgba(0,0,0,0.1);background:#F5F4F0;font-size:1.1rem;text-align:center;width:100%;outline:none;letter-spacing:8px;margin-bottom:8px">
+    <div id="site-pwd-error" style="font-size:0.78rem;color:#FF3B30;min-height:18px;margin-bottom:4px"></div>
+    <button onclick="doPasswordLogin()" style="width:100%;padding:13px;border-radius:100px;border:none;background:#1C1C1E;color:#fff;font-size:0.9rem;font-weight:600;cursor:pointer">進入</button>
+    <div class="gate-note">登入後一年內免重複輸入</div>
   </div>
 </div>
 
@@ -381,22 +395,17 @@ footer{
   </div>
 </div>
 
-<!-- ===== 待審核畫面 ===== -->
-<div id="pending-gate" class="hidden">
-  <div class="pending-card">
-    <div class="icon">⏳</div>
-    <h2>申請已送出</h2>
-    <p>你的登入申請已送達，<br>等待主人審核通過後即可進入。</p>
-    <div class="hint">通常在數小時內處理，請稍後再試</div>
-  </div>
-</div>
 
-<!-- ===== 審核 Modal ===== -->
+
+<!-- ===== 收件夾 Modal ===== -->
 <div id="approve-modal" class="hidden">
   <div class="approve-box">
     <button class="approve-close" onclick="closeApproveModal()">✕</button>
-    <h3>登入審核</h3>
-    <div class="sub">以下帳號申請進入 reyway.com</div>
+    <h3>📬 收件夾</h3>
+    <div class="inbox-tabs">
+      <button class="inbox-tab active" id="tab-bug" onclick="switchInboxTab('bug', this)">🐛 Bug 回報</button>
+      <button class="inbox-tab" id="tab-wish" onclick="switchInboxTab('wish', this)">💡 許願池</button>
+    </div>
     <div class="approve-list" id="approve-list">
       <div class="approve-empty">載入中…</div>
     </div>
@@ -589,69 +598,30 @@ footer{
 
 <script>
 // ─── 設定 ───
-const GOOGLE_CLIENT_ID = '483459469206-36b4ctr9fo0d9j9qgqp22itkp01hk6a2.apps.googleusercontent.com';
-const AUTH_KEY   = 'reyway_gauth';
-const OWNER_EMAIL = 'reysionchen@gmail.com';
-const AUTH_TTL_OWNER = 365 * 24 * 60 * 60 * 1000;
-const AUTH_TTL_GUEST = 3   * 24 * 60 * 60 * 1000;
-const API = '/api/auth';
-
-let _currentUser = null;
+const SITE_PWD   = '0000';
+const AUTH_KEY   = 'reyway_auth';
+const AUTH_TTL   = 365 * 24 * 60 * 60 * 1000;
+const AITEAM_API = 'https://aiteam.reyway.com/api/feedback';
 
 // ─── 工具 ───
 function hide(id){ document.getElementById(id).classList.add('hidden') }
 function show(id){ document.getElementById(id).classList.remove('hidden') }
 
-// ─── 登入後主流程 ───
-async function afterLogin(email, name) {
-  _currentUser = { email, name };
-
-  if (email === OWNER_EMAIL) {
-    // 主公：直接進入，顯示收件夾，並檢查待審核通知
+// ─── 密碼登入 ───
+function doPasswordLogin() {
+  const val = document.getElementById('site-pwd-input').value;
+  const errEl = document.getElementById('site-pwd-error');
+  if (val === SITE_PWD) {
+    localStorage.setItem(AUTH_KEY, JSON.stringify({ expiry: Date.now() + AUTH_TTL }));
     hide('site-gate');
     document.getElementById('notify-bar').style.display = 'flex';
-    checkPendingNotify();
-    return;
+    checkFeedbackNotify();
+  } else {
+    errEl.textContent = '密碼錯誤，請再試一次';
+    const inp = document.getElementById('site-pwd-input');
+    inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
+    inp.value = ''; setTimeout(()=>inp.focus(), 50);
   }
-
-  // 訪客：問後端是否核准
-  try {
-    const res = await fetch(`${API}?action=status&email=${encodeURIComponent(email)}`);
-    const data = await res.json();
-
-    if (data.status === 'approved') {
-      hide('site-gate');
-    } else if (data.status === 'pending') {
-      hide('site-gate');
-      show('pending-gate');
-    } else {
-      // unknown → 送申請
-      await fetch(`${API}?action=request`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, name })
-      });
-      hide('site-gate');
-      show('pending-gate');
-    }
-  } catch(e) {
-    hide('site-gate');
-    show('pending-gate');
-  }
-}
-
-// ─── Google 登入回調 ───
-function onGoogleSignIn(credential) {
-  try {
-    const payload = JSON.parse(atob(credential.split('.')[1]));
-    const ttl = payload.email === OWNER_EMAIL ? AUTH_TTL_OWNER : AUTH_TTL_GUEST;
-    localStorage.setItem(AUTH_KEY, JSON.stringify({
-      email: payload.email,
-      name:  payload.name,
-      expiry: Date.now() + ttl
-    }));
-    afterLogin(payload.email, payload.name);
-  } catch(e) { alert('登入失敗，請重試'); }
 }
 
 // ─── 初始化（頁面載入時） ───
@@ -659,34 +629,21 @@ function onGoogleSignIn(credential) {
   try {
     const stored = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null');
     if (stored && stored.expiry > Date.now()) {
-      afterLogin(stored.email, stored.name);
+      hide('site-gate');
+      document.getElementById('notify-bar').style.display = 'flex';
+      checkFeedbackNotify();
       return;
     }
   } catch(e) {}
-
-  // 未登入 → 顯示 Google 登入按鈕
-  window.addEventListener('load', function() {
-    if (typeof google === 'undefined') return;
-    google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: function(resp){ onGoogleSignIn(resp.credential); },
-      auto_select: false,
-    });
-    google.accounts.id.renderButton(
-      document.getElementById('g_signin_btn'),
-      { theme: 'outline', size: 'large', shape: 'pill', width: 240, locale: 'zh-TW' }
-    );
-  });
+  setTimeout(()=>{ const el=document.getElementById('site-pwd-input'); if(el) el.focus(); }, 300);
 })();
 
-// ─── 主公：查待審核通知 ───
-async function checkPendingNotify() {
+// ─── 查收件夾有幾筆 ───
+async function checkFeedbackNotify() {
   try {
-    const res = await fetch(`${API}?action=pending`, {
-      headers: { 'X-Owner-Token': OWNER_EMAIL }
-    });
+    const res = await fetch(AITEAM_API);
     const data = await res.json();
-    const count = (data.pending || []).length;
+    const count = (data.items || []).length;
     if (count > 0) {
       document.getElementById('notify-count').textContent = count;
       document.getElementById('notify-bar').classList.add('has-pending');
@@ -694,62 +651,84 @@ async function checkPendingNotify() {
   } catch(e) {}
 }
 
-// ─── 審核 Modal ───
+// ─── 收件夾 ───
+let _currentTab = 'bug';
+let _allFeedback = [];
+
+function switchInboxTab(tab, btnEl) {
+  _currentTab = tab;
+  document.querySelectorAll('.inbox-tab').forEach(b => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+  renderInboxList(_allFeedback);
+}
+
 async function openApproveModal() {
   show('approve-modal');
   const list = document.getElementById('approve-list');
   list.innerHTML = '<div class="approve-empty">載入中…</div>';
+  _allFeedback = [];
 
   try {
-    const res = await fetch(`${API}?action=pending`, {
-      headers: { 'X-Owner-Token': OWNER_EMAIL }
-    });
+    const res = await fetch(AITEAM_API);
     const data = await res.json();
-    const pending = data.pending || [];
-
-    if (pending.length === 0) {
-      list.innerHTML = '<div class="approve-empty">目前沒有待審核申請</div>';
-      return;
-    }
-
-    list.innerHTML = pending.map(p => `
-      <div class="approve-item" id="item-${btoa(p.email)}">
-        <div class="info">
-          <div class="name">${p.name || p.email}</div>
-          <div class="email">${p.email}</div>
-          <div class="time">${new Date(p.requestedAt).toLocaleString('zh-TW')}</div>
-        </div>
-        <div class="approve-actions">
-          <button class="btn-approve" onclick="doApprove('${p.email}', false)">通過</button>
-          <button class="btn-reject"  onclick="doApprove('${p.email}', true)">拒絕</button>
-        </div>
-      </div>
-    `).join('');
+    _allFeedback = (data.items || []).sort((a,b) => new Date(b.createdAt||b.time||0) - new Date(a.createdAt||a.time||0));
+    renderInboxList(_allFeedback);
   } catch(e) {
-    list.innerHTML = '<div class="approve-empty">載入失敗，請重試</div>';
+    list.innerHTML = '<div class="approve-empty">載入失敗，請稍後再試</div>';
   }
 }
 
-async function doApprove(email, reject) {
-  await fetch(`${API}?action=approve`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Owner-Token': OWNER_EMAIL },
-    body: JSON.stringify({ email, reject })
+function renderInboxList(items) {
+  const list = document.getElementById('approve-list');
+  const filtered = items.filter(item => {
+    const t = (item.type || item.kind || 'feedback').toLowerCase();
+    if (_currentTab === 'bug') return t === 'bug' || t === 'error';
+    if (_currentTab === 'wish') return t === 'wish' || t === 'feature' || t === 'idea';
+    return true;
   });
-  // 移除該列
-  const el = document.getElementById('item-' + btoa(email));
-  if (el) el.remove();
-  // 更新通知數
-  const remaining = document.querySelectorAll('.approve-item').length;
-  if (remaining === 0) {
-    document.getElementById('approve-list').innerHTML = '<div class="approve-empty">全部處理完畢 ✓</div>';
-    document.getElementById('notify-bar').classList.remove('has-pending');
-  } else {
-    document.getElementById('notify-count').textContent = remaining;
+
+  if (filtered.length === 0) {
+    const label = _currentTab === 'bug' ? 'Bug 回報' : '許願';
+    list.innerHTML = '<div class="approve-empty">目前沒有' + label + '項目 ✓</div>';
+    return;
   }
+
+  list.innerHTML = filtered.map(item => {
+    const t = new Date(item.createdAt || item.time || 0);
+    const timeStr = isNaN(t.getTime()) ? '' : t.toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    const site = (item.site || '未知站台').replace(/</g,'&lt;');
+    const msg = (item.message || item.content || '').replace(/</g,'&lt;');
+    const id = item.id || '';
+    return '<div class="inbox-item" id="fi-' + id + '">'
+      + '<div class="inbox-body">'
+      + '<div class="inbox-site">' + site + '</div>'
+      + '<div class="inbox-msg">' + msg + '</div>'
+      + '<div class="inbox-time">' + timeStr + '</div>'
+      + '</div>'
+      + '<button class="inbox-del" onclick="deleteFeedback('' + id + '')" title="刪除">✕</button>'
+      + '</div>';
+  }).join('');
+}
+
+async function deleteFeedback(id) {
+  if (!id) return;
+  try {
+    await fetch(AITEAM_API + '/' + id, { method: 'DELETE' });
+    _allFeedback = _allFeedback.filter(x => x.id !== id);
+    renderInboxList(_allFeedback);
+    const badge = document.getElementById('notify-count');
+    if (_allFeedback.length === 0) {
+      document.getElementById('notify-bar').classList.remove('has-pending');
+    } else {
+      badge.textContent = _allFeedback.length;
+    }
+  } catch(e) {}
 }
 
 function closeApproveModal() { hide('approve-modal'); }
+document.getElementById('approve-modal').addEventListener('click', function(e){
+  if(e.target === this) closeApproveModal();
+});
 
 // ─── 知識庫 filter ───
 function filterKb(tag) {
