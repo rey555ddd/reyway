@@ -170,16 +170,19 @@ body{
 .btn-reject{padding:6px 14px;border-radius:100px;border:none;cursor:pointer;font-size:0.78rem;font-weight:500;background:rgba(0,0,0,0.06);color:var(--text-2)}
 .approve-empty{font-size:0.85rem;color:var(--text-3);text-align:center;padding:20px}
 .approve-close{float:right;background:none;border:none;cursor:pointer;font-size:1rem;color:var(--text-3);margin-bottom:8px}
-.inbox-tabs{display:flex;gap:8px;margin-bottom:14px}
-.inbox-tab{padding:6px 16px;border-radius:100px;border:none;cursor:pointer;font-size:0.8rem;font-weight:500;background:var(--bg);color:var(--text-2);transition:background 0.15s,color 0.15s}
+.inbox-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.inbox-tab{padding:6px 14px;border-radius:100px;border:none;cursor:pointer;font-size:0.78rem;font-weight:500;background:var(--bg);color:var(--text-2);transition:background 0.15s,color 0.15s}
 .inbox-tab.active{background:var(--text);color:#fff}
 .inbox-item{display:flex;gap:12px;padding:12px 14px;border-radius:12px;background:var(--bg);margin-bottom:8px}
-.inbox-item .inbox-body{flex:1}
-.inbox-item .inbox-site{font-size:0.72rem;font-weight:600;color:var(--text-3);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:3px}
-.inbox-item .inbox-msg{font-size:0.87rem;color:var(--text);line-height:1.5}
-.inbox-item .inbox-time{font-size:0.72rem;color:var(--text-3);margin-top:4px}
-.inbox-item .inbox-del{background:none;border:none;cursor:pointer;color:var(--text-3);font-size:0.9rem;padding:4px;flex-shrink:0;opacity:0.6;align-self:flex-start}
-.inbox-item .inbox-del:hover{opacity:1;color:#FF3B30}
+.inbox-item .inbox-body{flex:1;min-width:0}
+.inbox-item .inbox-site{font-size:0.7rem;font-weight:600;color:var(--text-3);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:3px}
+.inbox-item .inbox-msg{font-size:0.86rem;color:var(--text);line-height:1.5;word-wrap:break-word}
+.inbox-item .inbox-time{font-size:0.7rem;color:var(--text-3);margin-top:4px}
+.inbox-item .inbox-actions{display:flex;gap:6px;flex-shrink:0;align-self:flex-start}
+.inbox-item .inbox-act-btn{background:none;border:none;cursor:pointer;font-size:0.75rem;padding:4px 10px;border-radius:100px}
+.inbox-item .inbox-act-btn.ok{background:rgba(52,199,89,0.15);color:#1a7a35;font-weight:600}
+.inbox-item .inbox-act-btn.del{color:var(--text-3);opacity:0.7}
+.inbox-item .inbox-act-btn.del:hover{opacity:1;color:#FF3B30}
 
 /* ===== Header ===== */
 header{padding:56px 0 40px;text-align:center}
@@ -370,13 +373,27 @@ footer{
     <div class="gate-title">阿笙的 AI 總站</div>
     <div class="gate-desc">本站為私人網站，請輸入密碼才能進入</div>
     <div class="gate-divider"></div>
-    <input id="site-pwd-input" type="password" placeholder="••••"
-      autocomplete="current-password"
-      onkeydown="if(event.key==='Enter')doPasswordLogin()"
-      style="padding:12px 20px;border-radius:100px;border:1px solid rgba(0,0,0,0.1);background:#F5F4F0;font-size:1.1rem;text-align:center;width:100%;outline:none;letter-spacing:8px;margin-bottom:8px">
+    <input id="site-pwd-input" type="password" placeholder="••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doPasswordLogin()" style="padding:12px 20px;border-radius:100px;border:1px solid rgba(0,0,0,0.1);background:#F5F4F0;font-size:1.1rem;text-align:center;width:100%;outline:none;letter-spacing:8px;margin-bottom:8px">
     <div id="site-pwd-error" style="font-size:0.78rem;color:#FF3B30;min-height:18px;margin-bottom:4px"></div>
     <button onclick="doPasswordLogin()" style="width:100%;padding:13px;border-radius:100px;border:none;background:#1C1C1E;color:#fff;font-size:0.9rem;font-weight:600;cursor:pointer">進入</button>
-    <div class="gate-note">登入後一年內免重複輸入</div>
+    <div class="gate-note">登入後 7 天內免重複輸入</div>
+    <a href="#" onclick="openAccessRequest();return false" style="font-size:0.75rem;color:#0055CC;text-decoration:none;margin-top:6px">沒有密碼？申請存取 →</a>
+  </div>
+</div>
+
+<!-- 申請存取 Modal -->
+<div id="access-modal" class="hidden" style="position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.35);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:20px;padding:28px 24px;width:340px;max-width:90vw">
+    <h3 style="font-size:1rem;font-weight:700;margin-bottom:6px">申請存取</h3>
+    <p style="font-size:0.8rem;color:#6E6E73;margin-bottom:14px">請填寫，我會盡快審核並聯繫</p>
+    <input id="access-name" placeholder="姓名" style="padding:10px 16px;border-radius:100px;border:1px solid rgba(0,0,0,0.1);background:#F5F4F0;font-size:0.9rem;width:100%;outline:none;margin-bottom:8px">
+    <input id="access-email" placeholder="Email" type="email" style="padding:10px 16px;border-radius:100px;border:1px solid rgba(0,0,0,0.1);background:#F5F4F0;font-size:0.9rem;width:100%;outline:none;margin-bottom:8px">
+    <textarea id="access-reason" placeholder="想看什麼？（選填）" style="padding:10px 16px;border-radius:14px;border:1px solid rgba(0,0,0,0.1);background:#F5F4F0;font-size:0.85rem;width:100%;outline:none;min-height:60px;resize:none;font-family:inherit;margin-bottom:12px"></textarea>
+    <div id="access-msg" style="font-size:0.78rem;color:#34C759;min-height:16px;margin-bottom:6px"></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="closeAccessRequest()" style="flex:1;padding:11px;border-radius:100px;border:none;background:#F5F4F0;color:#6E6E73;font-size:0.85rem;cursor:pointer">取消</button>
+      <button onclick="submitAccessRequest()" style="flex:1;padding:11px;border-radius:100px;border:none;background:#1C1C1E;color:#fff;font-size:0.85rem;font-weight:600;cursor:pointer">送出申請</button>
+    </div>
   </div>
 </div>
 
@@ -403,8 +420,9 @@ footer{
     <button class="approve-close" onclick="closeApproveModal()">✕</button>
     <h3>📬 收件夾</h3>
     <div class="inbox-tabs">
-      <button class="inbox-tab active" id="tab-bug" onclick="switchInboxTab('bug', this)">🐛 Bug 回報</button>
-      <button class="inbox-tab" id="tab-wish" onclick="switchInboxTab('wish', this)">💡 許願池</button>
+      <button class="inbox-tab active" data-tab="bug" onclick="switchInboxTab('bug', this)">🐛 Bug 回報</button>
+      <button class="inbox-tab" data-tab="wish" onclick="switchInboxTab('wish', this)">💡 許願池</button>
+      <button class="inbox-tab" data-tab="access" onclick="switchInboxTab('access', this)">🔑 登入審核</button>
     </div>
     <div class="approve-list" id="approve-list">
       <div class="approve-empty">載入中…</div>
@@ -598,145 +616,197 @@ footer{
 
 <script>
 // ─── 設定 ───
-const SITE_PWD   = '0000';
-const AUTH_KEY   = 'reyway_auth';
-const AUTH_TTL   = 365 * 24 * 60 * 60 * 1000;
-const AITEAM_API = 'https://aiteam.reyway.com/api/feedback';
+var SITE_PWD   = '0000';
+var AUTH_KEY   = 'reyway_auth';
+var AUTH_TTL   = 7 * 24 * 60 * 60 * 1000; // 7 天
+var AITEAM_API = 'https://aiteam.reyway.com/api/feedback';
 
-// ─── 工具 ───
-function hide(id){ document.getElementById(id).classList.add('hidden') }
-function show(id){ document.getElementById(id).classList.remove('hidden') }
+function hide(id){ document.getElementById(id).classList.add('hidden'); }
+function show(id){ document.getElementById(id).classList.remove('hidden'); }
 
 // ─── 密碼登入 ───
-function doPasswordLogin() {
-  const val = document.getElementById('site-pwd-input').value;
-  const errEl = document.getElementById('site-pwd-error');
-  if (val === SITE_PWD) {
+function doPasswordLogin(){
+  var inp = document.getElementById('site-pwd-input');
+  var val = (inp.value || '').trim();
+  var errEl = document.getElementById('site-pwd-error');
+  if (val === SITE_PWD){
+    errEl.textContent = '';
     localStorage.setItem(AUTH_KEY, JSON.stringify({ expiry: Date.now() + AUTH_TTL }));
     hide('site-gate');
     document.getElementById('notify-bar').style.display = 'flex';
     checkFeedbackNotify();
   } else {
     errEl.textContent = '密碼錯誤，請再試一次';
-    const inp = document.getElementById('site-pwd-input');
     inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
-    inp.value = ''; setTimeout(()=>inp.focus(), 50);
+    inp.value = ''; setTimeout(function(){ inp.focus(); }, 50);
   }
 }
 
-// ─── 初始化（頁面載入時） ───
+// ─── 申請存取 ───
+function openAccessRequest(){
+  document.getElementById('access-modal').classList.remove('hidden');
+  document.getElementById('access-msg').textContent = '';
+}
+function closeAccessRequest(){
+  document.getElementById('access-modal').classList.add('hidden');
+}
+async function submitAccessRequest(){
+  var name = document.getElementById('access-name').value.trim();
+  var email = document.getElementById('access-email').value.trim();
+  var reason = document.getElementById('access-reason').value.trim();
+  var msg = document.getElementById('access-msg');
+  if (!name || !email){ msg.style.color = '#FF3B30'; msg.textContent = '請填寫姓名和 Email'; return; }
+  try {
+    await fetch(AITEAM_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        site: 'reyway.com 登入申請',
+        type: 'access',
+        message: '【' + name + ' / ' + email + '】' + (reason || '（未填理由）')
+      })
+    });
+    msg.style.color = '#34C759';
+    msg.textContent = '✓ 已送出，主人會盡快審核';
+    setTimeout(closeAccessRequest, 1500);
+  } catch(e){
+    msg.style.color = '#FF3B30';
+    msg.textContent = '送出失敗，請稍後再試';
+  }
+}
+
+// ─── 初始化 ───
 (function(){
   try {
-    const stored = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null');
-    if (stored && stored.expiry > Date.now()) {
+    var stored = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null');
+    if (stored && stored.expiry > Date.now()){
       hide('site-gate');
       document.getElementById('notify-bar').style.display = 'flex';
       checkFeedbackNotify();
       return;
     }
-  } catch(e) {}
-  setTimeout(()=>{ const el=document.getElementById('site-pwd-input'); if(el) el.focus(); }, 300);
+  } catch(e){}
+  setTimeout(function(){
+    var el = document.getElementById('site-pwd-input');
+    if (el) el.focus();
+  }, 300);
 })();
 
-// ─── 查收件夾有幾筆 ───
-async function checkFeedbackNotify() {
+// ─── 收件夾 ───
+async function checkFeedbackNotify(){
   try {
-    const res = await fetch(AITEAM_API);
-    const data = await res.json();
-    const count = (data.items || []).length;
-    if (count > 0) {
+    var res = await fetch(AITEAM_API);
+    var data = await res.json();
+    var count = (data.items || []).length;
+    if (count > 0){
       document.getElementById('notify-count').textContent = count;
       document.getElementById('notify-bar').classList.add('has-pending');
     }
-  } catch(e) {}
+  } catch(e){}
 }
 
-// ─── 收件夾 ───
-let _currentTab = 'bug';
-let _allFeedback = [];
+var _currentTab = 'bug';
+var _allFeedback = [];
 
-function switchInboxTab(tab, btnEl) {
+function switchInboxTab(tab, btnEl){
   _currentTab = tab;
-  document.querySelectorAll('.inbox-tab').forEach(b => b.classList.remove('active'));
+  var tabs = document.querySelectorAll('.inbox-tab');
+  for (var i=0; i<tabs.length; i++) tabs[i].classList.remove('active');
   if (btnEl) btnEl.classList.add('active');
   renderInboxList(_allFeedback);
 }
 
-async function openApproveModal() {
+async function openApproveModal(){
   show('approve-modal');
-  const list = document.getElementById('approve-list');
+  var list = document.getElementById('approve-list');
   list.innerHTML = '<div class="approve-empty">載入中…</div>';
   _allFeedback = [];
-
   try {
-    const res = await fetch(AITEAM_API);
-    const data = await res.json();
-    _allFeedback = (data.items || []).sort((a,b) => new Date(b.createdAt||b.time||0) - new Date(a.createdAt||a.time||0));
+    var res = await fetch(AITEAM_API);
+    var data = await res.json();
+    _allFeedback = (data.items || []).slice().sort(function(a,b){
+      return new Date(b.createdAt||b.time||0) - new Date(a.createdAt||a.time||0);
+    });
     renderInboxList(_allFeedback);
-  } catch(e) {
+  } catch(e){
     list.innerHTML = '<div class="approve-empty">載入失敗，請稍後再試</div>';
   }
 }
 
-function renderInboxList(items) {
-  const list = document.getElementById('approve-list');
-  const filtered = items.filter(item => {
-    const t = (item.type || item.kind || 'feedback').toLowerCase();
+function escapeHtml(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderInboxList(items){
+  var list = document.getElementById('approve-list');
+  var filtered = items.filter(function(item){
+    var t = (item.type || item.kind || 'feedback').toLowerCase();
     if (_currentTab === 'bug') return t === 'bug' || t === 'error';
     if (_currentTab === 'wish') return t === 'wish' || t === 'feature' || t === 'idea';
+    if (_currentTab === 'access') return t === 'access';
     return true;
   });
 
-  if (filtered.length === 0) {
-    const label = _currentTab === 'bug' ? 'Bug 回報' : '許願';
+  if (filtered.length === 0){
+    var label = _currentTab === 'bug' ? 'Bug 回報' : _currentTab === 'wish' ? '許願' : '登入審核';
     list.innerHTML = '<div class="approve-empty">目前沒有' + label + '項目 ✓</div>';
     return;
   }
 
-  list.innerHTML = filtered.map(item => {
-    const t = new Date(item.createdAt || item.time || 0);
-    const timeStr = isNaN(t.getTime()) ? '' : t.toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
-    const site = (item.site || '未知站台').replace(/</g,'&lt;');
-    const msg = (item.message || item.content || '').replace(/</g,'&lt;');
-    const id = item.id || '';
-    return '<div class="inbox-item" id="fi-' + id + '">'
-      + '<div class="inbox-body">'
-      + '<div class="inbox-site">' + site + '</div>'
-      + '<div class="inbox-msg">' + msg + '</div>'
-      + '<div class="inbox-time">' + timeStr + '</div>'
-      + '</div>'
-      + '<button class="inbox-del" onclick="deleteFeedback('' + id + '')" title="刪除">✕</button>'
-      + '</div>';
+  list.innerHTML = filtered.map(function(item){
+    var t = new Date(item.createdAt || item.time || 0);
+    var timeStr = isNaN(t.getTime()) ? '' : t.toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    var site = escapeHtml(item.site || '未知站台');
+    var msg = escapeHtml(item.message || item.content || '');
+    var id = escapeHtml(item.id || '');
+    var actions = _currentTab === 'access'
+      ? '<button class="inbox-act-btn ok" onclick="approveItem(\'' + id + '\')">通過</button><button class="inbox-act-btn del" onclick="deleteFeedback(\'' + id + '\')">拒絕</button>'
+      : '<button class="inbox-act-btn del" onclick="deleteFeedback(\'' + id + '\')" title="刪除">✕</button>';
+    return '<div class="inbox-item" id="fi-' + id + '">' +
+      '<div class="inbox-body">' +
+        '<div class="inbox-site">' + site + '</div>' +
+        '<div class="inbox-msg">' + msg + '</div>' +
+        '<div class="inbox-time">' + timeStr + '</div>' +
+      '</div>' +
+      '<div class="inbox-actions">' + actions + '</div>' +
+    '</div>';
   }).join('');
 }
 
-async function deleteFeedback(id) {
+async function deleteFeedback(id){
   if (!id) return;
   try {
-    await fetch(AITEAM_API + '/' + id, { method: 'DELETE' });
-    _allFeedback = _allFeedback.filter(x => x.id !== id);
+    await fetch(AITEAM_API + '/' + encodeURIComponent(id), { method: 'DELETE' });
+    _allFeedback = _allFeedback.filter(function(x){ return x.id !== id; });
     renderInboxList(_allFeedback);
-    const badge = document.getElementById('notify-count');
-    if (_allFeedback.length === 0) {
+    if (_allFeedback.length === 0){
       document.getElementById('notify-bar').classList.remove('has-pending');
     } else {
-      badge.textContent = _allFeedback.length;
+      document.getElementById('notify-count').textContent = _allFeedback.length;
     }
-  } catch(e) {}
+  } catch(e){}
 }
 
-function closeApproveModal() { hide('approve-modal'); }
+async function approveItem(id){
+  // 通過 = 標記後刪除（之後可加 email 通知）
+  await deleteFeedback(id);
+}
+
+function closeApproveModal(){ hide('approve-modal'); }
 document.getElementById('approve-modal').addEventListener('click', function(e){
-  if(e.target === this) closeApproveModal();
+  if (e.target === this) closeApproveModal();
+});
+document.getElementById('access-modal').addEventListener('click', function(e){
+  if (e.target === this) closeAccessRequest();
 });
 
 // ─── 知識庫 filter ───
-function filterKb(tag) {
-  document.querySelectorAll('.kb-tab').forEach(t => t.classList.remove('active'));
+function filterKb(tag){
+  document.querySelectorAll('.kb-tab').forEach(function(t){ t.classList.remove('active'); });
   event.target.classList.add('active');
-  document.querySelectorAll('.kb-card').forEach(card => {
+  document.querySelectorAll('.kb-card').forEach(function(card){
     if (card.classList.contains('kb-empty-hint')) return;
-    const match = tag === 'all' || card.dataset.tag === tag;
+    var match = tag === 'all' || card.dataset.tag === tag;
     card.classList.toggle('hidden', !match);
   });
 }
