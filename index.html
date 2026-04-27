@@ -111,31 +111,36 @@ body{
 .pending-card p{font-size:0.84rem;color:var(--text-2);line-height:1.6}
 .pending-card .hint{font-size:0.75rem;color:var(--text-3)}
 
-/* ===== 通知 Badge（主公專用）===== */
+/* ===== 收件夾按鈕（主公專用，固定右上角）===== */
 #notify-bar{
-  background:var(--surface);
-  border-radius:var(--radius);
-  padding:14px 20px;
-  margin-bottom:20px;
-  box-shadow:var(--shadow);
-  display:none;
-  align-items:center;gap:12px;
+  position:fixed;top:16px;right:16px;z-index:990;
+  background:rgba(255,255,255,0.92);
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:100px;
+  padding:8px 16px 8px 12px;
+  display:flex;
+  align-items:center;gap:8px;
   cursor:pointer;
-  transition:box-shadow 0.2s;
+  box-shadow:0 2px 12px rgba(0,0,0,0.08);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  transition:all 0.2s;
+  user-select:none;
 }
-#notify-bar:hover{box-shadow:var(--shadow-hover)}
-#notify-bar.show{display:flex}
-.notify-dot{
-  width:10px;height:10px;border-radius:50%;
-  background:#FF3B30;flex-shrink:0;
-  box-shadow:0 0 0 3px rgba(255,59,48,0.15);
+#notify-bar:hover{
+  box-shadow:0 4px 20px rgba(0,0,0,0.12);
+  transform:translateY(-1px);
 }
-.notify-text{flex:1;font-size:0.88rem;font-weight:500}
+.notify-icon{font-size:1rem;line-height:1}
+.notify-text{font-size:0.82rem;font-weight:600;color:var(--text-1)}
 .notify-badge{
   background:#FF3B30;color:#fff;
-  font-size:0.72rem;font-weight:700;
-  padding:2px 8px;border-radius:100px;
+  font-size:0.68rem;font-weight:700;
+  padding:2px 7px;border-radius:100px;
+  min-width:18px;text-align:center;
+  display:none;
 }
+#notify-bar.has-pending .notify-badge{display:inline-block}
 
 /* ===== 審核 Modal ===== */
 #approve-modal{
@@ -411,10 +416,10 @@ footer{
     <div class="bio">苗栗囝仔，淨淨 CleanClean 創辦人<br>用 AI 改變品牌的玩法</div>
   </header>
 
-  <!-- 審核通知列（主公專用）-->
+  <!-- 收件夾按鈕（主公專用，右上角固定）-->
   <div id="notify-bar" onclick="openApproveModal()">
-    <div class="notify-dot"></div>
-    <div class="notify-text">有新的登入申請等待審核</div>
+    <div class="notify-icon">📬</div>
+    <div class="notify-text">收件夾</div>
     <div class="notify-badge" id="notify-count">0</div>
   </div>
 
@@ -602,8 +607,9 @@ async function afterLogin(email, name) {
   _currentUser = { email, name };
 
   if (email === OWNER_EMAIL) {
-    // 主公：直接進入，並檢查待審核通知
+    // 主公：直接進入，顯示收件夾，並檢查待審核通知
     hide('site-gate');
+    document.getElementById('notify-bar').style.display = 'flex';
     checkPendingNotify();
     return;
   }
@@ -683,7 +689,7 @@ async function checkPendingNotify() {
     const count = (data.pending || []).length;
     if (count > 0) {
       document.getElementById('notify-count').textContent = count;
-      document.getElementById('notify-bar').classList.add('show');
+      document.getElementById('notify-bar').classList.add('has-pending');
     }
   } catch(e) {}
 }
@@ -737,7 +743,7 @@ async function doApprove(email, reject) {
   const remaining = document.querySelectorAll('.approve-item').length;
   if (remaining === 0) {
     document.getElementById('approve-list').innerHTML = '<div class="approve-empty">全部處理完畢 ✓</div>';
-    document.getElementById('notify-bar').classList.remove('show');
+    document.getElementById('notify-bar').classList.remove('has-pending');
   } else {
     document.getElementById('notify-count').textContent = remaining;
   }
