@@ -377,23 +377,6 @@ footer{
     <div id="site-pwd-error" style="font-size:0.78rem;color:#FF3B30;min-height:18px;margin-bottom:4px"></div>
     <button onclick="doPasswordLogin()" style="width:100%;padding:13px;border-radius:100px;border:none;background:#1C1C1E;color:#fff;font-size:0.9rem;font-weight:600;cursor:pointer">進入</button>
     <div class="gate-note">登入後 7 天內免重複輸入</div>
-    <a href="#" onclick="openAccessRequest();return false" style="font-size:0.75rem;color:#0055CC;text-decoration:none;margin-top:6px">沒有密碼？申請存取 →</a>
-  </div>
-</div>
-
-<!-- 申請存取 Modal -->
-<div id="access-modal" class="hidden" style="position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.35);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center">
-  <div style="background:#fff;border-radius:20px;padding:28px 24px;width:340px;max-width:90vw">
-    <h3 style="font-size:1rem;font-weight:700;margin-bottom:6px">申請存取</h3>
-    <p style="font-size:0.8rem;color:#6E6E73;margin-bottom:14px">請填寫，我會盡快審核並聯繫</p>
-    <input id="access-name" placeholder="姓名" style="padding:10px 16px;border-radius:100px;border:1px solid rgba(0,0,0,0.1);background:#F5F4F0;font-size:0.9rem;width:100%;outline:none;margin-bottom:8px">
-    <input id="access-email" placeholder="Email" type="email" style="padding:10px 16px;border-radius:100px;border:1px solid rgba(0,0,0,0.1);background:#F5F4F0;font-size:0.9rem;width:100%;outline:none;margin-bottom:8px">
-    <textarea id="access-reason" placeholder="想看什麼？（選填）" style="padding:10px 16px;border-radius:14px;border:1px solid rgba(0,0,0,0.1);background:#F5F4F0;font-size:0.85rem;width:100%;outline:none;min-height:60px;resize:none;font-family:inherit;margin-bottom:12px"></textarea>
-    <div id="access-msg" style="font-size:0.78rem;color:#34C759;min-height:16px;margin-bottom:6px"></div>
-    <div style="display:flex;gap:8px">
-      <button onclick="closeAccessRequest()" style="flex:1;padding:11px;border-radius:100px;border:none;background:#F5F4F0;color:#6E6E73;font-size:0.85rem;cursor:pointer">取消</button>
-      <button onclick="submitAccessRequest()" style="flex:1;padding:11px;border-radius:100px;border:none;background:#1C1C1E;color:#fff;font-size:0.85rem;font-weight:600;cursor:pointer">送出申請</button>
-    </div>
   </div>
 </div>
 
@@ -422,7 +405,6 @@ footer{
     <div class="inbox-tabs">
       <button class="inbox-tab active" data-tab="bug" onclick="switchInboxTab('bug', this)">🐛 Bug 回報</button>
       <button class="inbox-tab" data-tab="wish" onclick="switchInboxTab('wish', this)">💡 許願池</button>
-      <button class="inbox-tab" data-tab="access" onclick="switchInboxTab('access', this)">🔑 登入審核</button>
     </div>
     <div class="approve-list" id="approve-list">
       <div class="approve-empty">載入中…</div>
@@ -642,39 +624,6 @@ function doPasswordLogin(){
   }
 }
 
-// ─── 申請存取 ───
-function openAccessRequest(){
-  document.getElementById('access-modal').classList.remove('hidden');
-  document.getElementById('access-msg').textContent = '';
-}
-function closeAccessRequest(){
-  document.getElementById('access-modal').classList.add('hidden');
-}
-async function submitAccessRequest(){
-  var name = document.getElementById('access-name').value.trim();
-  var email = document.getElementById('access-email').value.trim();
-  var reason = document.getElementById('access-reason').value.trim();
-  var msg = document.getElementById('access-msg');
-  if (!name || !email){ msg.style.color = '#FF3B30'; msg.textContent = '請填寫姓名和 Email'; return; }
-  try {
-    await fetch(AITEAM_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        site: 'reyway.com 登入申請',
-        type: 'access',
-        message: '【' + name + ' / ' + email + '】' + (reason || '（未填理由）')
-      })
-    });
-    msg.style.color = '#34C759';
-    msg.textContent = '✓ 已送出，主人會盡快審核';
-    setTimeout(closeAccessRequest, 1500);
-  } catch(e){
-    msg.style.color = '#FF3B30';
-    msg.textContent = '送出失敗，請稍後再試';
-  }
-}
-
 // ─── 初始化 ───
 (function(){
   try {
@@ -743,12 +692,11 @@ function renderInboxList(items){
     var t = (item.type || item.kind || 'feedback').toLowerCase();
     if (_currentTab === 'bug') return t === 'bug' || t === 'error';
     if (_currentTab === 'wish') return t === 'wish' || t === 'feature' || t === 'idea';
-    if (_currentTab === 'access') return t === 'access';
     return true;
   });
 
   if (filtered.length === 0){
-    var label = _currentTab === 'bug' ? 'Bug 回報' : _currentTab === 'wish' ? '許願' : '登入審核';
+    var label = _currentTab === 'bug' ? 'Bug 回報' : '許願';
     list.innerHTML = '<div class="approve-empty">目前沒有' + label + '項目 ✓</div>';
     return;
   }
@@ -759,9 +707,7 @@ function renderInboxList(items){
     var site = escapeHtml(item.site || '未知站台');
     var msg = escapeHtml(item.message || item.content || '');
     var id = escapeHtml(item.id || '');
-    var actions = _currentTab === 'access'
-      ? '<button class="inbox-act-btn ok" onclick="approveItem(\'' + id + '\')">通過</button><button class="inbox-act-btn del" onclick="deleteFeedback(\'' + id + '\')">拒絕</button>'
-      : '<button class="inbox-act-btn del" onclick="deleteFeedback(\'' + id + '\')" title="刪除">✕</button>';
+    var actions = '<button class="inbox-act-btn del" onclick="deleteFeedback(\'' + id + '\')" title="刪除">✕</button>';
     return '<div class="inbox-item" id="fi-' + id + '">' +
       '<div class="inbox-body">' +
         '<div class="inbox-site">' + site + '</div>' +
@@ -787,17 +733,9 @@ async function deleteFeedback(id){
   } catch(e){}
 }
 
-async function approveItem(id){
-  // 通過 = 標記後刪除（之後可加 email 通知）
-  await deleteFeedback(id);
-}
-
 function closeApproveModal(){ hide('approve-modal'); }
 document.getElementById('approve-modal').addEventListener('click', function(e){
   if (e.target === this) closeApproveModal();
-});
-document.getElementById('access-modal').addEventListener('click', function(e){
-  if (e.target === this) closeAccessRequest();
 });
 
 // ─── 知識庫 filter ───
