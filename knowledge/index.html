@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>網頁知識庫 — REYWAY</title>
+<meta name="description" content="REYWAY 知識庫：教學頁面、工具文件、品牌報告、第二大腦介紹。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#F5F4F0;
+  --surface:#FFFFFF;
+  --text:#1C1C1E;
+  --text-2:#6E6E73;
+  --text-3:#AEAEB2;
+  --border:rgba(0,0,0,0.06);
+  --shadow:0 2px 16px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-hover:0 8px 32px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
+  --radius:18px;
+  --radius-sm:12px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter','Noto Sans TC',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+
+header{padding:56px 0 32px;text-align:center}
+header .en{font-size:0.78rem;letter-spacing:0.18em;color:var(--text-3);text-transform:uppercase;margin-bottom:10px}
+header h1{font-size:1.75rem;font-weight:700;letter-spacing:-0.02em;color:var(--text);margin-bottom:6px}
+header .bio{font-size:0.88rem;color:var(--text-2);line-height:1.7;max-width:420px;margin:0 auto}
+
+.back{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:0.82rem;color:var(--text-2);text-decoration:none;
+  padding:8px 16px;border-radius:100px;
+  background:var(--surface);
+  box-shadow:var(--shadow);
+  margin-bottom:24px;
+  transition:box-shadow 0.18s;
+}
+.back:hover{box-shadow:var(--shadow-hover)}
+
+section{margin-bottom:40px}
+.section-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.section-label{font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-3)}
+.section-line{flex:1;height:1px;background:var(--border)}
+
+.kb-grid{display:flex;flex-direction:column;gap:10px}
+.kb-card{
+  background:var(--surface);
+  border-radius:var(--radius-sm);
+  padding:18px 22px;
+  box-shadow:var(--shadow);
+  display:flex;align-items:center;justify-content:space-between;
+  text-decoration:none;color:inherit;
+  transition:box-shadow 0.2s,transform 0.2s;
+}
+.kb-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}
+.kb-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0}
+.kb-icon{font-size:1.4rem;flex-shrink:0;width:40px;text-align:center}
+.kb-title{font-size:0.95rem;font-weight:600;margin-bottom:4px}
+.kb-meta{font-size:0.78rem;color:var(--text-3);line-height:1.5}
+.kb-arrow{font-size:0.95rem;color:var(--text-3);flex-shrink:0;margin-left:12px}
+.kb-tag{
+  display:inline-block;font-size:0.7rem;font-weight:500;
+  padding:2px 8px;border-radius:100px;
+  background:rgba(15,168,130,0.1);color:#0a7a5e;
+  margin-left:8px;vertical-align:middle;
+}
+.kb-tag.new{background:rgba(255,149,0,0.12);color:#b56600}
+
+footer{
+  text-align:center;padding:32px 20px 48px;
+  font-size:0.76rem;color:var(--text-3);letter-spacing:0.05em;
+}
+
+@media(max-width:600px){
+  header{padding:36px 0 24px}
+  .kb-card{padding:14px 18px}
+  .kb-left{gap:10px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <a class="back" href="/">← 回首頁</a>
+
+  <header>
+    <div class="en">REYWAY · KNOWLEDGE BASE</div>
+    <h1>網頁知識庫</h1>
+    <div class="bio">教學頁面・工具文件・品牌報告<br>持續累積中</div>
+  </header>
+
+  <section>
+    <div class="section-head">
+      <div class="section-label">第二大腦 · Second Brain</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="kb-grid">
+
+      <a class="kb-card" href="/knowledge/brain">
+        <div class="kb-left">
+          <div class="kb-icon">🧠</div>
+          <div>
+            <div class="kb-title">
+              笙之道｜第二大腦
+              <span class="kb-tag new">2026-04-29 新</span>
+            </div>
+            <div class="kb-meta">自建知識管理系統 brain.reyway.com · vs Obsidian 全維比較 + 使用說明 + 技術架構</div>
+          </div>
+        </div>
+        <div class="kb-arrow">→</div>
+      </a>
+
+    </div>
+  </section>
+
+  <footer>© 2026 REYWAY · 陳睿笙 · Built with AI</footer>
+
+</div>
+
+</body>
+</html>
