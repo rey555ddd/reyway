@@ -624,21 +624,11 @@ function doPasswordLogin(){
   }
 }
 
-// ─── 初始化 ───
+// ─── 初始化（CF Access 已負責認證，直接跳過 HTML 密碼門）───
 (function(){
-  try {
-    var stored = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null');
-    if (stored && stored.expiry > Date.now()){
-      hide('site-gate');
-      document.getElementById('notify-bar').style.display = 'flex';
-      checkFeedbackNotify();
-      return;
-    }
-  } catch(e){}
-  setTimeout(function(){
-    var el = document.getElementById('site-pwd-input');
-    if (el) el.focus();
-  }, 300);
+  hide('site-gate');
+  document.getElementById('notify-bar').style.display = 'flex';
+  checkFeedbackNotify();
 })();
 
 // ─── 收件夾 ───
