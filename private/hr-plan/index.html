@@ -3,17 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>6月縮編計畫 · REYWAY 機密</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<title>6月縮編計畫 · 淨淨內部機密</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#FFFFFF;--surface:#F7F7F5;--surface-2:#EFEDEA;
+  --bg:#FAFAFA;--surface:#F4F4F2;--surface-2:#EBEBEA;
   --text:#1C1C1E;--text-2:#6E6E73;--text-3:#AEAEB2;
-  --border:rgba(0,0,0,0.08);--accent:#1C1C1E;
-  --shadow:0 1px 4px rgba(0,0,0,0.06);
-  --radius:6px;--side-width:240px
+  --border:rgba(0,0,0,0.07);
+  --accent:#61D0DF;--accent-deep:#3FBECE;--accent-soft:rgba(97,208,223,0.10);--accent-border:rgba(97,208,223,0.35);
+  --shadow:0 1px 4px rgba(0,0,0,0.05);
+  --radius:6px
 }
 body{font-family:"Inter","Noto Sans TC",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
 
@@ -32,10 +33,11 @@ body{font-family:"Inter","Noto Sans TC",sans-serif;background:var(--bg);color:va
   box-shadow:0 24px 80px rgba(0,0,0,0.25);
   text-align:center
 }
+.pw-logo{display:block;height:38px;width:auto;margin:0 auto 20px}
 .pw-lock-icon{
-  width:56px;height:56px;background:#F7F7F5;
+  width:56px;height:56px;background:var(--accent-soft);
   border-radius:50%;display:flex;align-items:center;justify-content:center;
-  margin:0 auto 20px;font-size:1.5rem;color:#1C1C1E
+  margin:0 auto 20px;font-size:1.5rem;color:var(--accent-deep)
 }
 .pw-title{font-size:1.2rem;font-weight:700;margin-bottom:6px}
 .pw-sub{font-size:0.82rem;color:var(--text-2);margin-bottom:24px;line-height:1.5}
@@ -45,14 +47,14 @@ body{font-family:"Inter","Noto Sans TC",sans-serif;background:var(--bg);color:va
   text-align:center;letter-spacing:0.15em;
   outline:none;transition:border-color .2s;margin-bottom:12px
 }
-.pw-input:focus{border-color:#1C1C1E}
+.pw-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .pw-input.error{border-color:#FF3B30;animation:shake .3s}
 .pw-btn{
-  width:100%;padding:12px;background:#1C1C1E;color:#fff;
+  width:100%;padding:12px;background:var(--accent);color:#fff;
   border:none;border-radius:10px;font-size:0.9rem;font-weight:600;
   cursor:pointer;font-family:inherit;transition:background .2s
 }
-.pw-btn:hover{background:#333}
+.pw-btn:hover{background:var(--accent-deep)}
 .pw-error{font-size:0.78rem;color:#FF3B30;margin-top:8px;min-height:18px}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 
@@ -85,8 +87,8 @@ body{font-family:"Inter","Noto Sans TC",sans-serif;background:var(--bg);color:va
   white-space:nowrap
 }
 .action-btn:hover{background:var(--surface);border-color:rgba(0,0,0,0.15)}
-.action-btn.edit-active{background:#1C1C1E;color:#fff;border-color:#1C1C1E}
-.action-btn.edit-active:hover{background:#333;border-color:#333}
+.action-btn.edit-active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.action-btn.edit-active:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
 
 /* ── View / Edit mode ── */
 .add-block-zone{display:none}
@@ -97,8 +99,8 @@ body.edit-mode .block-content[contenteditable="true"]:hover{background:var(--sur
 body:not(.edit-mode) .block-content{cursor:default;user-select:text}
 .edit-mode-bar{
   display:none;align-items:center;gap:8px;
-  padding:6px 14px;background:#FFF9E6;border-radius:8px;
-  font-size:0.75rem;color:#8A6E00;border:1px solid #F0D060;
+  padding:6px 14px;background:var(--accent-soft);border-radius:8px;
+  font-size:0.75rem;color:var(--accent-deep);border:1px solid var(--accent-border);
   white-space:nowrap
 }
 body.edit-mode .edit-mode-bar{display:flex}
@@ -122,8 +124,8 @@ body.edit-mode .edit-mode-bar{display:flex}
 .block-content[contenteditable="true"]:focus{background:transparent}
 
 /* Block types */
-.block[data-type="h1"] .block-content{font-size:2rem;font-weight:700;line-height:1.3;padding:6px 8px;margin-top:8px}
-.block[data-type="h2"] .block-content{font-size:1.3rem;font-weight:700;border-bottom:1px solid var(--border);padding-bottom:8px;margin-top:24px;line-height:1.4}
+.block[data-type="h1"] .block-content{font-size:2rem;font-weight:700;line-height:1.3;padding:6px 8px;margin-top:8px;font-family:"Noto Serif TC",serif;letter-spacing:-0.01em}
+.block[data-type="h2"] .block-content{font-size:1.15rem;font-weight:700;border-bottom:2px solid var(--accent);padding-bottom:10px;margin-top:28px;line-height:1.4;color:var(--text)}
 
 /* ── Toggle (accordion) ── */
 .block[data-type="h2"]{cursor:pointer}
@@ -140,7 +142,7 @@ body.edit-mode .edit-mode-bar{display:flex}
 .toggle-section.collapsed{max-height:0;opacity:0;pointer-events:none}
 .block[data-type="h3"] .block-content{font-size:1rem;font-weight:700;color:var(--text);margin-top:16px;line-height:1.4}
 .block[data-type="text"] .block-content{font-size:0.92rem;color:var(--text);line-height:1.8}
-.block[data-type="callout"]{background:#F7F7F5;border-radius:8px;border-left:3px solid var(--text-3);margin:12px 0}
+.block[data-type="callout"]{background:var(--accent-soft);border-radius:8px;border-left:3px solid var(--accent);margin:12px 0}
 .block[data-type="callout"] .block-content{font-size:0.88rem;color:var(--text-2);line-height:1.7;padding:10px 14px}
 .block[data-type="hr"]{padding:8px 0;margin:12px 0}
 .block[data-type="hr"] .block-content{border-top:1px solid var(--border);padding:0;min-height:0}
@@ -222,6 +224,7 @@ body.edit-mode .edit-mode-bar{display:flex}
 <!-- Password Gate -->
 <div id="pw-gate">
   <div class="pw-box">
+    <img class="pw-logo" src="/logo-cleanclean.png" alt="淨淨">
     <div class="pw-lock-icon"><i class="ph ph-lock-key"></i></div>
     <div class="pw-title">機密文件</div>
     <div class="pw-sub">此頁面受密碼保護<br>請輸入存取密碼繼續</div>
@@ -235,6 +238,7 @@ body.edit-mode .edit-mode-bar{display:flex}
 <div class="topbar">
   <div class="topbar-inner">
     <a class="back-btn" href="/private/"><i class="ph ph-arrow-left"></i> 非公開文件</a>
+    <img src="/logo-cleanclean.png" alt="淨淨" style="height:22px;width:auto;object-fit:contain;flex-shrink:0">
     <div class="topbar-title">6月縮編計畫</div>
     <div class="topbar-actions">
       <div class="edit-mode-bar"><i class="ph ph-pencil-simple"></i> 編輯模式</div>
