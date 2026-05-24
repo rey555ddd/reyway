@@ -446,7 +446,10 @@ function createBlockEl(b) {
 
     var ce = wrap.querySelector('.block-content');
     ce.addEventListener('input', function() {
-      b.content = ce.innerHTML;
+      var clone = ce.cloneNode(true);
+      var arr = clone.querySelector('.toggle-arrow');
+      if (arr) arr.remove();
+      b.content = clone.innerHTML;
       saveBlocks();
     });
     ce.addEventListener('keydown', function(e) {
