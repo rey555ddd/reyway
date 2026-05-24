@@ -306,7 +306,8 @@ function toggleEditMode() {
     btn.classList.remove('edit-active');
     icon.className = 'ph ph-pencil-simple';
     label.textContent = '編輯';
-    showToast('已儲存');
+    showToast('儲存中…');
+    saveToKV(blocks).then(function() { showToast('已儲存 ✓'); });
   }
   // Toggle contenteditable on all block-content
   document.querySelectorAll('.block-content').forEach(function(el) {
@@ -541,9 +542,41 @@ function showToast(msg) {
   setTimeout(function(){ t.classList.remove('show'); }, 2000);
 }
 
-// Init
-blocks = loadBlocks();
-renderAll();
+// ── KV sync ──
+const API = '/private/hr-plan/api';
+
+async function loadFromKV() {
+  try {
+    const r = await fetch(API);
+    if (r.ok) {
+      const data = await r.json();
+      if (Array.isArray(data) && data.length) return data;
+    }
+  } catch(e) {}
+  return null;
+}
+
+async function saveToKV(data) {
+  try {
+    await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': PW },
+      body: JSON.stringify(data)
+    });
+  } catch(e) {}
+}
+
+// Init — 先讀 KV，沒有再 fallback localStorage
+(async function init() {
+  var kvBlocks = await loadFromKV();
+  if (kvBlocks) {
+    blocks = kvBlocks;
+    localStorage.setItem(LS_DOC, JSON.stringify(blocks));
+  } else {
+    blocks = loadBlocks();
+  }
+  renderAll();
+})();
 </script>
 </body>
 </html>
