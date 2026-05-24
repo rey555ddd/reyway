@@ -124,6 +124,20 @@ body.edit-mode .edit-mode-bar{display:flex}
 /* Block types */
 .block[data-type="h1"] .block-content{font-size:2rem;font-weight:700;line-height:1.3;padding:6px 8px;margin-top:8px}
 .block[data-type="h2"] .block-content{font-size:1.3rem;font-weight:700;border-bottom:1px solid var(--border);padding-bottom:8px;margin-top:24px;line-height:1.4}
+
+/* ── Toggle (accordion) ── */
+.block[data-type="h2"]{cursor:pointer}
+.toggle-arrow{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:20px;height:20px;margin-right:6px;
+  color:var(--text-3);font-size:0.75rem;
+  transition:transform .2s;flex-shrink:0;vertical-align:middle;
+  user-select:none
+}
+.block[data-type="h2"].collapsed .toggle-arrow{transform:rotate(-90deg)}
+.block[data-type="h2"] .block-content{display:flex;align-items:center}
+.toggle-section{overflow:hidden;transition:max-height .25s ease,opacity .2s ease;max-height:2000px;opacity:1}
+.toggle-section.collapsed{max-height:0;opacity:0;pointer-events:none}
 .block[data-type="h3"] .block-content{font-size:1rem;font-weight:700;color:var(--text);margin-top:16px;line-height:1.4}
 .block[data-type="text"] .block-content{font-size:0.92rem;color:var(--text);line-height:1.8}
 .block[data-type="callout"]{background:#F7F7F5;border-radius:8px;border-left:3px solid var(--text-3);margin:12px 0}
@@ -460,10 +474,55 @@ function renderAll() {
   firstZone.appendChild(firstBtn);
   root.appendChild(firstZone);
 
+  // Build with toggle sections
+  var currentSection = null; // div wrapping blocks under an h2
+
   blocks.forEach(function(b) {
     var els = createBlockEl(b);
-    root.appendChild(els.wrap);
-    root.appendChild(els.zone);
+
+    if (b.type === 'h2') {
+      // Add toggle arrow to h2
+      var arrow = document.createElement('span');
+      arrow.className = 'toggle-arrow';
+      arrow.innerHTML = '&#9660;';
+      var bc = els.wrap.querySelector('.block-content');
+      bc.insertBefore(arrow, bc.firstChild);
+
+      // Click to toggle
+      els.wrap.addEventListener('click', function(e) {
+        if (e.target.closest('.block-actions')) return;
+        var isCollapsed = els.wrap.classList.toggle('collapsed');
+        if (currentSection) {
+          // find this h2's section
+        }
+        var sec = els.wrap._section;
+        if (sec) sec.classList.toggle('collapsed', isCollapsed);
+      });
+
+      root.appendChild(els.wrap);
+      root.appendChild(els.zone);
+
+      // Create a new section div for children
+      currentSection = document.createElement('div');
+      currentSection.className = 'toggle-section';
+      els.wrap._section = currentSection;
+      root.appendChild(currentSection);
+
+    } else if (b.type === 'h1') {
+      // h1 resets section grouping
+      currentSection = null;
+      root.appendChild(els.wrap);
+      root.appendChild(els.zone);
+    } else {
+      // Put into current section if exists
+      if (currentSection) {
+        currentSection.appendChild(els.wrap);
+        currentSection.appendChild(els.zone);
+      } else {
+        root.appendChild(els.wrap);
+        root.appendChild(els.zone);
+      }
+    }
   });
 }
 
