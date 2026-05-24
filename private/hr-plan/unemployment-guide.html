@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>申請失業給付 · 步驟說明</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --accent:#61D0DF;
+  --accent-soft:rgba(97,208,223,0.12);
+  --accent-border:rgba(97,208,223,0.4);
+  --text:#1C1C1E;
+  --text-2:#444;
+  --text-3:#666;
+  --border:#E0E0E0;
+}
+
+body{
+  font-family:"Noto Sans TC",sans-serif;
+  background:#fff;
+  color:var(--text);
+  font-size:14px;
+  line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+}
+
+.page{
+  max-width:720px;
+  margin:0 auto;
+  padding:48px 40px 60px;
+}
+
+/* Header */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:3px solid var(--accent);
+  padding-bottom:20px;
+  margin-bottom:28px;
+}
+.header-logo{
+  height:36px;
+  width:auto;
+}
+.header-right{
+  text-align:right;
+}
+.header-badge{
+  display:inline-block;
+  background:var(--accent-soft);
+  border:1px solid var(--accent-border);
+  color:var(--accent);
+  font-size:11px;
+  font-weight:700;
+  padding:3px 10px;
+  border-radius:100px;
+  letter-spacing:0.05em;
+}
+
+/* Title block */
+.title-block{
+  margin-bottom:32px;
+}
+.title-main{
+  font-size:26px;
+  font-weight:700;
+  color:var(--text);
+  letter-spacing:-0.01em;
+  line-height:1.3;
+  border-bottom:3px solid var(--accent);
+  display:inline-block;
+  padding-bottom:4px;
+  margin-bottom:10px;
+}
+.title-sub{
+  font-size:13px;
+  color:var(--text-3);
+  line-height:1.6;
+}
+
+/* Section heading */
+.section-title{
+  font-size:15px;
+  font-weight:700;
+  color:var(--text);
+  margin:28px 0 12px;
+  padding-bottom:6px;
+  border-bottom:2px solid var(--accent);
+}
+
+/* Info grid (資格 & 金額) */
+.info-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:8px;
+}
+.info-card{
+  background:#F7F7F5;
+  border-radius:8px;
+  border:1px solid var(--border);
+  padding:14px 16px;
+}
+.info-card-label{
+  font-size:11px;
+  font-weight:700;
+  color:var(--accent);
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.info-card-body{
+  font-size:13px;
+  color:var(--text-2);
+  line-height:1.75;
+}
+.highlight{
+  font-weight:700;
+  color:var(--text);
+  font-size:15px;
+}
+
+/* Steps */
+.steps{
+  counter-reset:step;
+}
+.step{
+  display:flex;
+  gap:16px;
+  align-items:flex-start;
+  margin-bottom:20px;
+  page-break-inside:avoid;
+}
+.step-num{
+  flex-shrink:0;
+  width:34px;
+  height:34px;
+  background:var(--accent);
+  color:#fff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:15px;
+  font-weight:700;
+  margin-top:2px;
+}
+.step-body{}
+.step-title{
+  font-size:14px;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:6px;
+  line-height:1.4;
+}
+.step-content{
+  font-size:13px;
+  color:var(--text-2);
+  line-height:1.8;
+}
+.step-content ul{
+  padding-left:16px;
+}
+.step-content li{
+  margin-bottom:2px;
+}
+.step-note{
+  display:inline;
+  background:var(--accent-soft);
+  border-left:3px solid var(--accent);
+  padding:2px 8px;
+  border-radius:0 4px 4px 0;
+  font-size:12px;
+  font-weight:700;
+  color:var(--accent);
+}
+
+/* Hotlines */
+.hotlines{
+  background:#F7F7F5;
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:14px 18px;
+  margin:8px 0;
+}
+.hotline-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:13px;
+  padding:4px 0;
+  border-bottom:1px solid var(--border);
+}
+.hotline-row:last-child{border-bottom:none}
+.hotline-label{color:var(--text-3)}
+.hotline-num{
+  font-weight:700;
+  color:var(--text);
+  font-size:15px;
+  font-variant-numeric:tabular-nums;
+}
+
+/* Note box */
+.note-box{
+  background:var(--accent-soft);
+  border:1px solid var(--accent-border);
+  border-radius:8px;
+  padding:14px 16px;
+  margin:8px 0;
+  font-size:13px;
+  color:var(--text-2);
+  line-height:1.8;
+}
+.note-box ul{
+  padding-left:18px;
+  margin-top:4px;
+}
+.note-box li{margin-bottom:3px;}
+
+/* Footer */
+.footer{
+  margin-top:48px;
+  padding-top:16px;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:11px;
+  color:var(--text-3);
+}
+.footer-brand{font-weight:700;color:var(--text-2)}
+
+/* Print overrides */
+@media print{
+  body{font-size:12px}
+  .page{padding:24px 28px 32px;max-width:100%}
+  .title-main{font-size:22px}
+  .section-title{font-size:13px}
+  .step-num{width:28px;height:28px;font-size:13px}
+  .info-grid{gap:8px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <img class="header-logo" src="/logo-cleanclean.png" alt="淨淨 CleanClean">
+    <div class="header-right">
+      <span class="header-badge">內部文件</span>
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div class="title-block">
+    <div class="title-main">申請失業給付 · 步驟說明</div>
+    <div class="title-sub">本說明由淨淨 CleanClean 提供，祝您順利找到下一站</div>
+  </div>
+
+  <!-- 資格條件 + 可以領多少 -->
+  <div class="section-title">申請資格</div>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-card-label">基本條件</div>
+      <div class="info-card-body">
+        ・非自願離職（公司縮編、資遣）<br>
+        ・離職前 3 年內，就業保險年資合計滿 1 年<br>
+        ・具工作能力及繼續工作意願<br>
+        ・向公立就業服務機構辦理求職登記
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-label">給付金額</div>
+      <div class="info-card-body">
+        月投保薪資的 <span class="highlight">60%</span><br>
+        最長領 <span class="highlight">6 個月</span><br>
+        <span style="font-size:12px;color:var(--text-3)">（年資滿 10 年可延至 9 個月）</span><br>
+        每月領一次，需持續回報求職狀況
+      </div>
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div class="section-title">申請步驟（共 4 步）</div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">準備文件 <span style="font-size:12px;font-weight:400;color:var(--text-3)">離職後盡快備妥</span></div>
+        <div class="step-content">
+          <ul>
+            <li>非自願離職書（公司已提供）<span style="color:var(--accent);font-weight:700;">&#10003;</span></li>
+            <li>身分證正本 + 影本</li>
+            <li>近 3 個月薪資證明或勞保投保資料</li>
+            <li>本人存摺封面影本（撥款用）</li>
+            <li>1 吋照片 2 張</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">到就業服務站辦理求職登記</div>
+        <div class="step-content">
+          離職後 <span class="step-note">14 天內</span> 前往最近的公立就業服務站<br>
+          台灣各縣市均有設站，可至勞動部官網查詢<br>
+          告知工作人員：「我要辦理失業給付申請」
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">等待審核 &amp; 初次認定</div>
+        <div class="step-content">
+          登記後約 <span class="step-note">14 個工作天</span> 核發第一次給付<br>
+          之後每 <span class="step-note">28 天</span> 回就業服務站做一次「繼續請領認定」<br>
+          每次認定需提供 2 筆以上求職紀錄
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">撥款入帳</div>
+        <div class="step-content">
+          審核通過後，款項直接匯入您的帳戶<br>
+          若找到新工作，請主動回報，停止請領
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 常用電話 -->
+  <div class="section-title">常用電話</div>
+  <div class="hotlines">
+    <div class="hotline-row">
+      <span class="hotline-label">勞動部就業服務專線（免付費）</span>
+      <span class="hotline-num">0800-777-888</span>
+    </div>
+    <div class="hotline-row">
+      <span class="hotline-label">勞工保險局</span>
+      <span class="hotline-num">02-2396-1266</span>
+    </div>
+  </div>
+
+  <!-- 注意事項 -->
+  <div class="section-title">注意事項</div>
+  <div class="note-box">
+    <ul>
+      <li>申請期限：離職後 <strong>2 年內</strong>均可申請，但建議盡快辦理</li>
+      <li>領取期間若有兼職收入超過基本工資，需申報</li>
+      <li>若自願離職（非公司縮編）則不符合申請資格</li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span class="footer-brand">淨淨 CleanClean</span>
+    <span>製作日期：2026 年 6 月</span>
+  </div>
+
+</div>
+</body>
+</html>
