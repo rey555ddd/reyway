@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6月縮編計畫 · REYWAY 機密</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#FFFFFF;--surface:#F7F7F5;--surface-2:#EFEDEA;
+  --text:#1C1C1E;--text-2:#6E6E73;--text-3:#AEAEB2;
+  --border:rgba(0,0,0,0.08);--accent:#1C1C1E;
+  --shadow:0 1px 4px rgba(0,0,0,0.06);
+  --radius:6px;--side-width:240px
+}
+body{font-family:"Inter","Noto Sans TC",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
+
+/* ── Password Gate ── */
+#pw-gate{
+  position:fixed;inset:0;z-index:999;
+  background:rgba(28,28,30,0.96);
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);
+  transition:opacity .3s
+}
+#pw-gate.hidden{opacity:0;pointer-events:none}
+.pw-box{
+  background:#fff;border-radius:20px;
+  padding:44px 40px;max-width:380px;width:90%;
+  box-shadow:0 24px 80px rgba(0,0,0,0.25);
+  text-align:center
+}
+.pw-lock-icon{
+  width:56px;height:56px;background:#F7F7F5;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;font-size:1.5rem;color:#1C1C1E
+}
+.pw-title{font-size:1.2rem;font-weight:700;margin-bottom:6px}
+.pw-sub{font-size:0.82rem;color:var(--text-2);margin-bottom:24px;line-height:1.5}
+.pw-input{
+  width:100%;padding:12px 16px;border:1px solid var(--border);
+  border-radius:10px;font-size:1rem;font-family:inherit;
+  text-align:center;letter-spacing:0.15em;
+  outline:none;transition:border-color .2s;margin-bottom:12px
+}
+.pw-input:focus{border-color:#1C1C1E}
+.pw-input.error{border-color:#FF3B30;animation:shake .3s}
+.pw-btn{
+  width:100%;padding:12px;background:#1C1C1E;color:#fff;
+  border:none;border-radius:10px;font-size:0.9rem;font-weight:600;
+  cursor:pointer;font-family:inherit;transition:background .2s
+}
+.pw-btn:hover{background:#333}
+.pw-error{font-size:0.78rem;color:#FF3B30;margin-top:8px;min-height:18px}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* ── Top Bar ── */
+.topbar{
+  position:sticky;top:0;z-index:10;
+  background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:12px 0;
+}
+.topbar-inner{
+  max-width:900px;margin:0 auto;padding:0 24px;
+  display:flex;align-items:center;gap:12px
+}
+.back-btn{
+  display:flex;align-items:center;gap:5px;
+  font-size:0.8rem;color:var(--text-2);text-decoration:none;
+  padding:5px 12px;border-radius:100px;border:1px solid var(--border);
+  white-space:nowrap;transition:background .15s
+}
+.back-btn:hover{background:var(--surface)}
+.topbar-title{font-size:0.88rem;font-weight:600;color:var(--text-2);flex:1}
+.topbar-actions{display:flex;gap:8px}
+.action-btn{
+  display:flex;align-items:center;gap:5px;
+  font-size:0.78rem;font-weight:500;color:var(--text-2);
+  padding:6px 12px;border:1px solid var(--border);
+  border-radius:100px;background:var(--bg);cursor:pointer;
+  font-family:inherit;transition:background .15s,border-color .15s;
+  white-space:nowrap
+}
+.action-btn:hover{background:var(--surface);border-color:rgba(0,0,0,0.15)}
+
+/* ── Document Body ── */
+.doc-wrap{max-width:760px;margin:0 auto;padding:40px 24px 100px}
+
+/* Blocks */
+.block{
+  position:relative;margin-bottom:2px;
+  border-radius:4px;transition:background .15s
+}
+.block:hover{background:var(--surface)}
+.block-content{
+  padding:3px 8px;min-height:1.6em;
+  outline:none;
+  line-height:1.75;
+  word-break:break-all
+}
+.block-content:empty:before{content:attr(data-placeholder);color:var(--text-3)}
+.block-content[contenteditable="true"]:focus{background:transparent}
+
+/* Block types */
+.block[data-type="h1"] .block-content{font-size:2rem;font-weight:700;line-height:1.3;padding:6px 8px;margin-top:8px}
+.block[data-type="h2"] .block-content{font-size:1.3rem;font-weight:700;border-bottom:1px solid var(--border);padding-bottom:8px;margin-top:24px;line-height:1.4}
+.block[data-type="h3"] .block-content{font-size:1rem;font-weight:700;color:var(--text);margin-top:16px;line-height:1.4}
+.block[data-type="text"] .block-content{font-size:0.92rem;color:var(--text);line-height:1.8}
+.block[data-type="callout"]{background:#F7F7F5;border-radius:8px;border-left:3px solid var(--text-3);margin:12px 0}
+.block[data-type="callout"] .block-content{font-size:0.88rem;color:var(--text-2);line-height:1.7;padding:10px 14px}
+.block[data-type="hr"]{padding:8px 0;margin:12px 0}
+.block[data-type="hr"] .block-content{border-top:1px solid var(--border);padding:0;min-height:0}
+.block[data-type="table-callout"]{background:#F7F7F5;border-radius:8px;margin:8px 0}
+.block[data-type="table-callout"] .block-content{font-size:0.85rem;color:var(--text);line-height:1.9;padding:12px 16px;font-family:"Noto Sans TC",sans-serif}
+
+/* Block actions */
+.block-actions{
+  position:absolute;right:6px;top:50%;transform:translateY(-50%);
+  display:none;align-items:center;gap:4px
+}
+.block:hover .block-actions{display:flex}
+.block-act-btn{
+  width:24px;height:24px;border:none;background:rgba(0,0,0,0.06);
+  border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:0.75rem;color:var(--text-2);transition:background .15s,color .15s
+}
+.block-act-btn:hover{background:rgba(0,0,0,0.12);color:var(--text)}
+
+/* Add block btn */
+.add-block-zone{
+  position:relative;height:20px;display:flex;align-items:center;
+  margin:1px 0
+}
+.add-block-btn{
+  opacity:0;transition:opacity .15s;
+  position:absolute;left:-28px;
+  width:22px;height:22px;border:none;background:none;
+  cursor:pointer;color:var(--text-3);font-size:1.1rem;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:4px
+}
+.add-block-zone:hover .add-block-btn,
+.block:hover+.add-block-zone .add-block-btn{opacity:1;color:var(--text-2)}
+.add-block-btn:hover{background:var(--surface-2)!important;color:var(--text)!important}
+
+/* Block type menu */
+.block-menu{
+  position:fixed;z-index:100;
+  background:#fff;border:1px solid var(--border);
+  border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.12);
+  padding:6px;min-width:180px;
+  display:none
+}
+.block-menu.show{display:block}
+.block-menu-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border-radius:6px;cursor:pointer;
+  font-size:0.85rem;color:var(--text);
+  transition:background .12s
+}
+.block-menu-item:hover{background:var(--surface)}
+.block-menu-item-icon{
+  width:28px;height:28px;background:var(--surface);
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:0.9rem;color:var(--text-2);flex-shrink:0
+}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#1C1C1E;color:#fff;padding:10px 20px;border-radius:100px;
+  font-size:0.82rem;opacity:0;transition:all .3s;pointer-events:none;z-index:200;
+  white-space:nowrap
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Mobile */
+@media(max-width:600px){
+  .doc-wrap{padding:24px 16px 80px}
+  .block[data-type="h1"] .block-content{font-size:1.5rem}
+  .topbar-title{display:none}
+  .add-block-btn{left:-4px}
+}
+</style>
+</head>
+<body>
+
+<!-- Password Gate -->
+<div id="pw-gate">
+  <div class="pw-box">
+    <div class="pw-lock-icon"><i class="ph ph-lock-key"></i></div>
+    <div class="pw-title">機密文件</div>
+    <div class="pw-sub">此頁面受密碼保護<br>請輸入存取密碼繼續</div>
+    <input type="password" class="pw-input" id="pw-input" placeholder="輸入密碼" autocomplete="off">
+    <button class="pw-btn" id="pw-submit">解鎖</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="back-btn" href="/private/"><i class="ph ph-arrow-left"></i> 非公開文件</a>
+    <div class="topbar-title">6月縮編計畫</div>
+    <div class="topbar-actions">
+      <button class="action-btn" id="btn-copy-all">
+        <i class="ph ph-copy"></i> 複製全文
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Document -->
+<div class="doc-wrap" id="doc-root"></div>
+
+<!-- Block type menu -->
+<div class="block-menu" id="block-menu">
+  <div class="block-menu-item" data-type="text"><div class="block-menu-item-icon"><i class="ph ph-text-t"></i></div>文字段落</div>
+  <div class="block-menu-item" data-type="h2"><div class="block-menu-item-icon"><i class="ph ph-text-h-two"></i></div>標題 H2</div>
+  <div class="block-menu-item" data-type="callout"><div class="block-menu-item-icon"><i class="ph ph-note"></i></div>Callout 框</div>
+  <div class="block-menu-item" data-type="hr"><div class="block-menu-item-icon"><i class="ph ph-minus"></i></div>分隔線</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Auth ──
+const PW = 'hr2026';
+const LS_PW = 'reyway_hr_auth';
+const LS_DOC = 'reyway_hr_doc';
+
+function checkAuth() {
+  try {
+    var s = JSON.parse(localStorage.getItem(LS_PW) || 'null');
+    if (s && s.expiry > Date.now()) {
+      showDoc();
+      return;
+    }
+  } catch(e) {}
+  document.getElementById('pw-gate').style.transition = 'none';
+}
+
+function showDoc() {
+  var gate = document.getElementById('pw-gate');
+  gate.classList.add('hidden');
+  setTimeout(function(){ gate.style.display='none'; }, 300);
+}
+
+document.getElementById('pw-submit').addEventListener('click', function() {
+  var val = document.getElementById('pw-input').value;
+  if (val === PW) {
+    localStorage.setItem(LS_PW, JSON.stringify({ expiry: Date.now() + 86400000 }));
+    showDoc();
+  } else {
+    var inp = document.getElementById('pw-input');
+    inp.classList.add('error');
+    document.getElementById('pw-error').textContent = '密碼錯誤，請再試一次';
+    setTimeout(function(){ inp.classList.remove('error'); }, 400);
+  }
+});
+
+document.getElementById('pw-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') document.getElementById('pw-submit').click();
+});
+
+checkAuth();
+
+// ── Blocks ──
+var DEFAULT_BLOCKS = [
+  { id:'b1', type:'h1', content:'6月縮編計畫' },
+  { id:'b2', type:'callout', content:'最後更新：2026-06-01 ｜ 機密文件，請勿外傳' },
+  { id:'b3', type:'h2', content:'縮編主因' },
+  { id:'b4', type:'text', content:'公司財務狀況，因去年大量擴編，增加1倍的人力。2025年～2026年4月結算後，屬於虧損狀態（年初尾牙年報有說明）。因財務狀態不容樂觀，故採取勞基法第11條，啟動「團隊縮編專案」。' },
+  { id:'b5', type:'text', content:'考慮到今年部門績效等現況，故忍痛決定：行銷部縮編 30%、設計部縮編 50%。' },
+  { id:'b6', type:'h2', content:'目標名單' },
+  { id:'b7', type:'h3', content:'行銷部' },
+  { id:'b8', type:'text', content:'・戴瑋盈（戴戴）｜社群行銷\n理由：成效有限，分組解散，未來由竹南門市兼任淨淨社群企劃、外包行銷輔助。' },
+  { id:'b9', type:'text', content:'・傅珮容（傅傅）｜社群行銷\n理由：同上，社群組解散。' },
+  { id:'b10', type:'text', content:'・范媛（媛媛）｜行銷企劃\n理由：百貨發展 & CRM 業務縮編，由原行銷 & 電商部兼任。' },
+  { id:'b11', type:'text', content:'・鍾尚勳（饅頭）｜電商組長\n理由：電商成效不佳、發展緩慢，由兩位原部員負責即可。' },
+  { id:'b12', type:'h3', content:'設計部' },
+  { id:'b13', type:'text', content:'・陳聖樺（小花）｜設計經理\n理由：財務考量。感謝這幾年的作品，後續設計併入行銷部，故簡化設計部 & 部分外包。（資遣費最高）' },
+  { id:'b14', type:'text', content:'・江書姍（酥酥）｜設計\n理由：同小花，設計部縮編。' },
+  { id:'b15', type:'h2', content:'提供條件（員工可選擇）' },
+  { id:'b16', type:'h3', content:'選項 A：合法資遣' },
+  { id:'b17', type:'text', content:'・法定資遣費\n・預告工資 + 特休折現\n・非自願離職書（可申請失業給付）' },
+  { id:'b18', type:'h3', content:'選項 B：合意終止（建議優先）' },
+  { id:'b19', type:'text', content:'・法定資遣費 + 10～20%（優於法定）\n・預告工資 + 特休折現\n・非自願離職書（可申請失業給付）\n・簽署保密條款\n・合意終止費，簽約後當日支付' },
+  { id:'b20', type:'h2', content:'費用試算表' },
+  { id:'b21', type:'text', content:'（以下為預設合意終止費 / 上限價）' },
+  { id:'b22', type:'table-callout', content:'陳聖樺（小花）｜52,000 × 4.7年 → 預設 35萬 ｜上限 37萬\n江書姍（酥酥）｜40,000 × 3.1年 → 預設 18萬 ｜上限 19萬\n鍾尚勳（饅頭）｜45,000 × 1.4年 → 預設 11萬 ｜上限 12萬\n戴瑋盈（戴戴）｜42,000 × 2.1年 → 預設 13萬 ｜上限 14萬\n范媛（媛媛）  ｜40,000 × 0.5年 → 預設 3.5萬｜上限 3.8萬\n傅珮容（傅傅）｜35,000 × 0.4年 → 預設 1萬  ｜上限 1.3萬' },
+  { id:'b23', type:'h2', content:'執行時程' },
+  { id:'b24', type:'text', content:'・啟動：6月員工旅遊（清邁）返台後\n・完成目標：2026年6月30日前\n・主導：人資顧問\n・笙闆角色：與小花、戴戴先行人情溝通，後續交人資接手\n・全程錄音' },
+  { id:'b25', type:'h2', content:'備註 / 討論區' },
+  { id:'b26', type:'callout', content:'（供人資顧問與依庭補充意見）' }
+];
+
+var blocks = [];
+var pendingInsertAfter = null;
+var saveTimer = null;
+
+function loadBlocks() {
+  try {
+    var saved = localStorage.getItem(LS_DOC);
+    if (saved) {
+      var parsed = JSON.parse(saved);
+      if (parsed && parsed.length) return parsed;
+    }
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_BLOCKS));
+}
+
+function saveBlocks() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function() {
+    localStorage.setItem(LS_DOC, JSON.stringify(blocks));
+  }, 500);
+}
+
+function genId() {
+  return 'b' + Date.now() + Math.random().toString(36).slice(2,6);
+}
+
+function getBlockText(b) {
+  return b.content || '';
+}
+
+function createBlockEl(b) {
+  var zone = document.createElement('div');
+  zone.className = 'add-block-zone';
+  zone.dataset.afterId = b.id;
+
+  var addBtn = document.createElement('button');
+  addBtn.className = 'add-block-btn';
+  addBtn.title = '新增 block';
+  addBtn.innerHTML = '<i class="ph ph-plus"></i>';
+  addBtn.addEventListener('click', function(e) {
+    showBlockMenu(e, b.id);
+  });
+  zone.appendChild(addBtn);
+
+  var wrap = document.createElement('div');
+  wrap.className = 'block';
+  wrap.dataset.id = b.id;
+  wrap.dataset.type = b.type;
+
+  if (b.type === 'hr') {
+    wrap.innerHTML = '<div class="block-content" data-placeholder=""></div>' +
+      '<div class="block-actions">' +
+      '<button class="block-act-btn" data-action="delete" title="刪除"><i class="ph ph-x"></i></button>' +
+      '</div>';
+  } else {
+    var placeholder = b.type === 'h1' ? '標題' : b.type === 'h2' ? '段落標題' : b.type === 'h3' ? '小標題' : b.type === 'callout' ? '備註內容' : '輸入文字…';
+    wrap.innerHTML = '<div class="block-content" contenteditable="true" spellcheck="false" data-placeholder="' + placeholder + '">' +
+      escHtml(b.content || '') + '</div>' +
+      '<div class="block-actions">' +
+      '<button class="block-act-btn" data-action="copy" title="複製此 block"><i class="ph ph-copy-simple"></i></button>' +
+      '<button class="block-act-btn" data-action="delete" title="刪除"><i class="ph ph-x"></i></button>' +
+      '</div>';
+
+    var ce = wrap.querySelector('.block-content');
+    ce.addEventListener('input', function() {
+      b.content = ce.innerText;
+      saveBlocks();
+    });
+    ce.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey && b.type !== 'text' && b.type !== 'callout' && b.type !== 'table-callout') {
+        e.preventDefault();
+        insertBlock('text', b.id);
+      }
+    });
+  }
+
+  wrap.querySelector('[data-action="delete"]').addEventListener('click', function() {
+    deleteBlock(b.id);
+  });
+
+  var copyBtn = wrap.querySelector('[data-action="copy"]');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function() {
+      copyText(getBlockText(b));
+    });
+  }
+
+  return { wrap: wrap, zone: zone };
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+function renderAll() {
+  var root = document.getElementById('doc-root');
+  root.innerHTML = '';
+
+  // Leading add zone
+  var firstZone = document.createElement('div');
+  firstZone.className = 'add-block-zone';
+  firstZone.dataset.afterId = 'start';
+  var firstBtn = document.createElement('button');
+  firstBtn.className = 'add-block-btn';
+  firstBtn.innerHTML = '<i class="ph ph-plus"></i>';
+  firstBtn.addEventListener('click', function(e) { showBlockMenu(e, null); });
+  firstZone.appendChild(firstBtn);
+  root.appendChild(firstZone);
+
+  blocks.forEach(function(b) {
+    var els = createBlockEl(b);
+    root.appendChild(els.wrap);
+    root.appendChild(els.zone);
+  });
+}
+
+function deleteBlock(id) {
+  var idx = blocks.findIndex(function(b){ return b.id===id; });
+  if (idx > -1) {
+    blocks.splice(idx, 1);
+    saveBlocks();
+    renderAll();
+  }
+}
+
+function insertBlock(type, afterId) {
+  var newBlock = { id: genId(), type: type, content: '' };
+  if (afterId === null) {
+    blocks.unshift(newBlock);
+  } else {
+    var idx = blocks.findIndex(function(b){ return b.id===afterId; });
+    if (idx > -1) blocks.splice(idx+1, 0, newBlock);
+    else blocks.push(newBlock);
+  }
+  saveBlocks();
+  renderAll();
+  setTimeout(function() {
+    var el = document.querySelector('[data-id="'+newBlock.id+'"] .block-content');
+    if (el && el.getAttribute('contenteditable')) el.focus();
+  }, 50);
+}
+
+// Block menu
+var blockMenu = document.getElementById('block-menu');
+var menuAfterIdx = null;
+
+function showBlockMenu(e, afterId) {
+  pendingInsertAfter = afterId;
+  blockMenu.classList.add('show');
+  var x = e.clientX, y = e.clientY;
+  var menuW = 180, menuH = 200;
+  if (x + menuW > window.innerWidth) x = window.innerWidth - menuW - 8;
+  if (y + menuH > window.innerHeight) y = y - menuH;
+  blockMenu.style.left = x + 'px';
+  blockMenu.style.top = y + 'px';
+  e.stopPropagation();
+}
+
+blockMenu.querySelectorAll('.block-menu-item').forEach(function(item) {
+  item.addEventListener('click', function() {
+    insertBlock(item.dataset.type, pendingInsertAfter);
+    blockMenu.classList.remove('show');
+  });
+});
+
+document.addEventListener('click', function(e) {
+  if (!blockMenu.contains(e.target)) blockMenu.classList.remove('show');
+});
+
+// Copy all
+document.getElementById('btn-copy-all').addEventListener('click', function() {
+  var text = blocks.map(function(b) { return getBlockText(b); }).join('\n\n');
+  copyText(text);
+});
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(function() {
+    showToast('已複製到剪貼簿');
+  }).catch(function() {
+    showToast('複製失敗，請手動選取');
+  });
+}
+
+// Toast
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2000);
+}
+
+// Init
+blocks = loadBlocks();
+renderAll();
+</script>
+</body>
+</html>
