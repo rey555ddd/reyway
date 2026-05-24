@@ -404,7 +404,10 @@ function genId() {
 }
 
 function getBlockText(b) {
-  return b.content || '';
+  // Strip HTML tags for plain text copy
+  var tmp = document.createElement('div');
+  tmp.innerHTML = b.content || '';
+  return tmp.innerText || '';
 }
 
 function createBlockEl(b) {
@@ -434,7 +437,7 @@ function createBlockEl(b) {
   } else {
     var placeholder = b.type === 'h1' ? '標題' : b.type === 'h2' ? '段落標題' : b.type === 'h3' ? '小標題' : b.type === 'callout' ? '備註內容' : '輸入文字…';
     wrap.innerHTML = '<div class="block-content" contenteditable="false" spellcheck="false" data-placeholder="' + placeholder + '">' +
-      escHtml(b.content || '') + '</div>' +
+      (b.content || '') + '</div>' +
       '<div class="block-actions">' +
       '<button class="block-act-btn" data-action="copy" title="複製此 block"><i class="ph ph-copy-simple"></i></button>' +
       '<button class="block-act-btn" data-action="delete" title="刪除"><i class="ph ph-x"></i></button>' +
@@ -442,7 +445,7 @@ function createBlockEl(b) {
 
     var ce = wrap.querySelector('.block-content');
     ce.addEventListener('input', function() {
-      b.content = ce.innerText;
+      b.content = ce.innerHTML;
       saveBlocks();
     });
     ce.addEventListener('keydown', function(e) {
